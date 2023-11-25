@@ -2,7 +2,6 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-from cartech_web.db.database import Base,engine
 
 def main():
     """Run administrative tasks."""
@@ -16,11 +15,6 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
-def create_tables():
-    Base.metadata.create_all(bind = engine)
-
-create_tables()  
 
 if __name__ == '__main__':
     main()
