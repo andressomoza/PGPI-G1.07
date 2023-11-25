@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 #from cart.forms import CartAddProductForm
 from .models import Category, Product, Coche
+from django.db.models import Q
+from django.shortcuts import render
 
 # from django.views import generic
 
@@ -14,22 +16,42 @@ from .models import Category, Product, Coche
 #         return Product.objects.filter(created__lte=timezone.now()
 #         ).order_by('-created')[:5]
 
-
-
-def product_list(request, category_slug=None):
-    category = None
-    categories = Category.objects.all()
-    products = Product.objects.filter(available=True)
-    if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
-        products = products.filter(category=category)
-    context = {'category': category, 'categories': categories, 'products': products}
-    return render(request, 'shop/product/list.html', context)
-
 def cars_list(request):
+    # Recuperar parámetros de la URL para filtrar
+    combustible = request.GET.get('combustible', '')
+    precio_maximo = request.GET.get('precio_maximo', '')
+    tipo_conduccion = request.GET.get('conduccion', '')
+    consumo = request.GET.get('consumo', '')
+    caballos = request.GET.get('caballos', '')
+
+    # Filtrar coches según los parámetros
     cars = Coche.objects.all()
-    
-    context = {'cars': cars}
+
+    if combustible:
+        cars = cars.filter(combustible=combustible)
+
+    if precio_maximo:
+        cars = cars.filter(precio_inicial__lte=precio_maximo)
+        
+    if tipo_conduccion:
+        cars = cars.filter(conduccion=tipo_conduccion)
+        
+    if consumo:
+        cars = cars.filter(consumo__lte = consumo)
+        
+    if caballos:
+        cars = cars.filter(caballos__lte =caballos)
+
+
+    context = {
+        'cars': cars,
+        'combustible': combustible,
+        'precio_maximo': precio_maximo,
+        'conduccion': tipo_conduccion,
+        'caballos': caballos,
+        'consumo': consumo,
+    }
+
     return render(request, 'shop/cars/list.html', context)
 
 # class ProductListView(generic.ListView):
@@ -52,14 +74,6 @@ def car_detail(request, id):
     #cart_product_form = CartAddProductForm()
     context = {'car': car, 'cart_car_form': car}
     return render(request, 'shop/cars/detail.html', context)
-
-
-
-def product_detail(request, id, slug):
-    product = get_object_or_404(Product, id=id, slug=slug, available=True)
-    #cart_product_form = CartAddProductForm()
-    context = {'product': product, 'cart_product_form': product}
-    return render(request, 'shop/product/detail.html', context)
 
 
 # class ProductDetialView(generic.DetailView):

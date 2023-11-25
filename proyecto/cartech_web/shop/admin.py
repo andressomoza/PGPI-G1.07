@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Coche, Accesorio
+from .models import Category, Product, Coche, Accesorio, Eleccion
 
 #register
 @admin.register(Category)
@@ -22,3 +22,6 @@ class ProductAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['precio', 'nombre']
 
+@admin.register(Eleccion)
+class ProductAdmin(admin.ModelAdmin):
+    pass
