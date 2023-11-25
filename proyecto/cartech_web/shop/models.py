@@ -27,19 +27,14 @@ class Coche(models.Model):
     caballos = models.IntegerField()
     precio_inicial = models.IntegerField()
     
-    accesorios = models.ManyToManyField(Accesorio, related_name='coches')
+    accesorios = models.ManyToManyField(Accesorio, related_name='coches',blank=True)
     
     def get_precio_total(self):
         total_coste_accesorios = self.accesorios.aggregate(total=models.Sum('precio'))['total'] or 0
         return self.precio_inicial + total_coste_accesorios
-    
 
     def get_absolute_url(self):
         return reverse('shop:car_detail', args=[self.id])
-    
-    class Meta:
-        app_label = 'coche'
-    
 
 class Usuario(models.Model):
     

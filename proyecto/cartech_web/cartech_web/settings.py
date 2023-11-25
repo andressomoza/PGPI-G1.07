@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'crispy_forms',
 
     'shop.apps.ShopConfig',
-    'coche',
 ]
 
 MIDDLEWARE = [

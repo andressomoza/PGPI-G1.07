@@ -22,30 +22,16 @@
                     <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                         <div class="block-4 text-center border">
                             <div class="block-4-text p-4">
-                                <h3><a href="{{ car.get_absolute_url }}">{{ car.modelo }}</a></h3>
-                                <p class="mb-0">{{ car.consumo }}</p>
-                                <p class="text-primary font-weight-bold">${{ car.precio_inicial }}</p>
+                                <h3><a href="{{ car.get_absolute_url }}">{{car.marca}}  {{ car.modelo }}</a></h3>
+                                <p class="mb-0">Consumo: {{ car.consumo }}</p>
+                                <p class="text-primary font-weight-bold">Precio base: {{ car.precio_inicial }}€</p>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
                 
-                <div class="row" data-aos="fade-up">
-                    <div class="col-md-12 text-center">
-                        <div class="site-block-27">
-                            <ul>
-                                <li><a href="#">&lt;</a></li>
-                                <li class="active"><span>1</span></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#">4</a></li>
-                                <li><a href="#">5</a></li>
-                                <li><a href="#">&gt;</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
             
         </div>

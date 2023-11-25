@@ -29,8 +29,8 @@ def product_list(request, category_slug=None):
 def cars_list(request):
     cars = Coche.objects.all()
     
-    context = {'products': cars}
-    return render(request, 'shop/product/list.html', context)
+    context = {'cars': cars}
+    return render(request, 'shop/cars/list.html', context)
 
 # class ProductListView(generic.ListView):
 #     template_name = 'shop/product/list.html'
@@ -47,6 +47,11 @@ def cars_list(request):
 #         context['categories'] = Category.objects.all()
 
 
+def car_detail(request, id):
+    car = get_object_or_404(Coche, id=id)
+    #cart_product_form = CartAddProductForm()
+    context = {'car': car, 'cart_car_form': car}
+    return render(request, 'shop/cars/detail.html', context)
 
 
 
