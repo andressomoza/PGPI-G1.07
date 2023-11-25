@@ -23,7 +23,21 @@
             <p>Combustible: {{ car.combustible }}</p>
             <p>Conduccion: {{ car.conduccion }}</p>
             <p>Caballos: {{ car.caballos }}</p>
-            <p><strong class="text-primary h4">{{ car.precio_inicial }}</strong></p>
+            <p><strong class="text-primary h4">Precio Base: {{ car.precio_inicial }}</strong></p>
+
+            {% if car.accesorios.all %}
+                    <h3>Accesorios:</h3>
+                    <ul>
+                        {% for accesorio in car.accesorios.all %}
+                            <li>{{ accesorio.nombre }} - {{ accesorio.precio }}€</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No se han seleccionado accesorios para este coche.</p>
+                {% endif %}
+
+            <p><strong class="text-primary h4">Precio total: {{ car.get_precio_total }}</strong></p>
+
           </div>
         </div>
       </div>
