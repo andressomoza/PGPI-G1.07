@@ -33,6 +33,10 @@ class Coche(models.Model):
         total_coste_accesorios = self.accesorios.aggregate(total=models.Sum('precio'))['total'] or 0
         return self.precio_inicial + total_coste_accesorios
     
+
+    def get_absolute_url(self):
+        return reverse('shop:car_detail', args=[self.id])
+    
     class Meta:
         app_label = 'coche'
     
