@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 #from cart.forms import CartAddProductForm
-from .models import Category, Product
+from .models import Category, Product, Coche
 
 # from django.views import generic
 
@@ -26,6 +26,11 @@ def product_list(request, category_slug=None):
     context = {'category': category, 'categories': categories, 'products': products}
     return render(request, 'shop/product/list.html', context)
 
+def cars_list(request):
+    cars = Coche.objects.all()
+    
+    context = {'products': cars}
+    return render(request, 'shop/product/list.html', context)
 
 # class ProductListView(generic.ListView):
 #     template_name = 'shop/product/list.html'
