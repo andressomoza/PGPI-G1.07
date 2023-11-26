@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 #from cart.forms import CartAddProductForm
-from .models import Category, Product, Coche
+from .models import Category, Product, Coche, Accesorio, Eleccion
 from django.db.models import Q
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 
 # from django.views import generic
 
@@ -17,32 +18,22 @@ from django.shortcuts import render
 #         ).order_by('-created')[:5]
 
 def cars_list(request):
-    # Recuperar parámetros de la URL para filtrar
     combustible = request.GET.get('combustible', '')
     precio_maximo = request.GET.get('precio_maximo', '')
     tipo_conduccion = request.GET.get('conduccion', '')
     consumo = request.GET.get('consumo', '')
     caballos = request.GET.get('caballos', '')
-
-    # Filtrar coches según los parámetros
     cars = Coche.objects.all()
-
     if combustible:
         cars = cars.filter(combustible=combustible)
-
     if precio_maximo:
         cars = cars.filter(precio_inicial__lte=precio_maximo)
-        
     if tipo_conduccion:
         cars = cars.filter(conduccion=tipo_conduccion)
-        
     if consumo:
         cars = cars.filter(consumo__lte = consumo)
-        
     if caballos:
         cars = cars.filter(caballos__lte =caballos)
-
-
     context = {
         'cars': cars,
         'combustible': combustible,
@@ -71,8 +62,26 @@ def cars_list(request):
 
 def car_detail(request, id):
     car = get_object_or_404(Coche, id=id)
-    #cart_product_form = CartAddProductForm()
-    context = {'car': car, 'cart_car_form': car}
+    accesorios_disponibles = Accesorio.objects.all()
+    if request.method == 'POST' and 'confirmar_eleccion' in request.POST:
+        accesorios_seleccionados_ids = request.POST.getlist('accesorios_seleccionados', [])
+        accesorios_seleccionados = Accesorio.objects.filter(id__in=accesorios_seleccionados_ids)
+    else:
+        accesorios_seleccionados = []
+        
+    if request.method == 'POST' and 'comprar' in request.POST:
+        eleccion = Eleccion(coche=car)
+        eleccion.save()
+        eleccion.accesorios.set(accesorios_seleccionados)
+        return HttpResponseRedirect(f'/confirmacion_compra/{eleccion.id}')
+    
+    precio_total = car.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
+    context = {
+        'car': car,
+        'accesorios_disponibles': accesorios_disponibles,
+        'accesorios_seleccionados': accesorios_seleccionados,
+        'precio_total': precio_total,
+    }
     return render(request, 'shop/cars/detail.html', context)
 
 

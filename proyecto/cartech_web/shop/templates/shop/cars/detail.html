@@ -23,12 +23,12 @@
             <p>Combustible: {{ car.combustible }}</p>
             <p>Conduccion: {{ car.conduccion }}</p>
             <p>Caballos: {{ car.caballos }}</p>
-            <p><strong class="text-primary h4">Precio Base: {{ car.precio_inicial }}</strong></p>
+            <p><strong class="text-primary h4">Precio Base: {{ car.precio_inicial }}€</strong></p>
 
-            {% if car.accesorios.all %}
+            {% if accesorios_seleccionados %}
                     <h3>Accesorios:</h3>
                     <ul>
-                        {% for accesorio in car.accesorios.all %}
+                        {% for accesorio in accesorios_seleccionados %}
                             <li>{{ accesorio.nombre }} - {{ accesorio.precio }}€</li>
                         {% endfor %}
                     </ul>
@@ -36,50 +36,44 @@
                     <p>No se han seleccionado accesorios para este coche.</p>
                 {% endif %}
 
-            <p><strong class="text-primary h4">Precio total: {{ car.get_precio_total }}</strong></p>
-
+            <p><strong class="text-primary h4">Precio total: {{ precio_total }}€</strong></p>
+            <form id="comprar-form" method="post" class="row">
+              {% csrf_token %}
+              <div class="col-12">
+                  <button type="submit" class="btn btn-primary" name="comprar">Comprar</button>
+              </div>
+          </form>
           </div>
+          <div class="col-md-6">
+            <h3>Accesorios Disponibles:</h3>
+            <form id="accesorios-form" method="post" class="row">
+                {% csrf_token %}
+                {% for accesorio in accesorios_disponibles %}
+                    <div class="col-sm-6 col-lg-4 mb-4">
+                        <div class="block-4 text-center border">
+                            <div class="block-4-text p-4">
+                              <p>{{ accesorio.nombre }}  </p>
+                              <p>{{ accesorio.precio }}€ </p>
+                                <label class="d-block">
+                                  <input type="checkbox" name="accesorios_seleccionados" value="{{ accesorio.id }}"> 
+                                  Seleccionar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" name="confirmar_eleccion">Confirmar elección</button>
+                </div>
+            </form>
+        </div>
+        </div>
         </div>
       </div>
     </div>
+      
+      
+  </div>
 
-    <div class="site-section block-3 site-blocks-2 bg-light">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-md-7 site-section-heading text-center pt-4">
-            <h2>Featured Products</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="nonloop-block-3 owl-carousel">
-              <div class="item">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <img src="#" alt="Image placeholder" class="img-fluid">
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3><a href="#">T-Shirt Mockup</a></h3>
-                    <p class="mb-0">Finding perfect products</p>
-                    <p class="text-primary font-weight-bold">$50</p>
-                  </div>
-                </div>
-              </div>
-              <div class="item">
-                <div class="block-4 text-center">
-                  <figure class="block-4-image">
-                    <img src="images/shoe_1.jpg" alt="Image placeholder" class="img-fluid">
-                  </figure>
-                  <div class="block-4-text p-4">
-                    <h3><a href="#">Corater</a></h3>
-                    <p class="mb-0">Finding perfect products</p>
-                    <p class="text-primary font-weight-bold">$50</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 {% endblock %}
