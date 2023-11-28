@@ -7,4 +7,5 @@ urlpatterns = [
     #path('', views.product_list, name='product_list'),
     path('', views.cars_list, name='cars_list'),
     path('<int:id>/', views.car_detail, name='car_detail'),
+    
 ]
