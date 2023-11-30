@@ -30,16 +30,6 @@ class Coche(models.Model):
         return reverse('shop:car_detail', args=[self.id])
 
 
-class Eleccion(models.Model):
-    
-    coche = models.ForeignKey(Coche, related_name='elecciones', on_delete=models.CASCADE)
-    accesorios = models.ManyToManyField(Accesorio, related_name='elecciones',blank=True)
-    
-    def get_precio_total(self):
-        precio_base = self.coche.precio_inicial
-        total_coste_accesorios = self.accesorios.aggregate(total=models.Sum('precio'))['total'] or 0
-        return precio_base + total_coste_accesorios
-    
 class Usuario(models.Model):
     
     nombre = models.CharField(max_length=50)
@@ -47,8 +37,18 @@ class Usuario(models.Model):
     direccion = models.CharField(max_length=50)
     contraseña = models.CharField(max_length=50)
     
-    class Meta:
-        app_label = 'usuario'
+        
+class Eleccion(models.Model):
+    
+    coche = models.ForeignKey(Coche, related_name='elecciones', on_delete=models.CASCADE)
+    accesorios = models.ManyToManyField(Accesorio, related_name='elecciones',blank=True)
+    #usuario = models.ForeignKey(Usuario, related_name='elecciones', on_delete=models.CASCADE)
+    
+    def get_precio_total(self):
+        precio_base = self.coche.precio_inicial
+        total_coste_accesorios = self.accesorios.aggregate(total=models.Sum('precio'))['total'] or 0
+        return precio_base + total_coste_accesorios
+    
         
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)
@@ -67,8 +67,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, related_name='products',
-                                 on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, db_index=True)
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'shop.apps.ShopConfig',
     'incidencias.apps.IncidenciasConfig',
+    'pedidos.apps.PedidosConfig',
 ]
 
 MIDDLEWARE = [

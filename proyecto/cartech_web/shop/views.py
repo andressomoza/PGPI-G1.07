@@ -73,7 +73,7 @@ def car_detail(request, id):
         eleccion = Eleccion(coche=car)
         eleccion.save()
         eleccion.accesorios.set(accesorios_seleccionados)
-        return HttpResponseRedirect(f'/confirmacion_compra/{eleccion.id}')
+        return HttpResponseRedirect(f'confirmacion_compra/{eleccion.id}')
     
     precio_total = car.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
     context = {
