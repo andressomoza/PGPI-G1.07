@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from .forms import IncidenciaForm
 from .models import Incidencia
 
+def pagina_base(request):
+    return render(request, 'base.html')
+
 def crear_incidencia(request):
     if request.method == 'POST':
         form = IncidenciaForm(request.POST)
@@ -11,10 +14,10 @@ def crear_incidencia(request):
     else:
         form = IncidenciaForm()
 
-    return render(request, 'incidencias/crear_incidencia.html', {'form': form})
+    return render(request, 'crear_incidencia.html', {'form': form})
 
 
-def incidencias_list(request):
+def listar_incidencias(request):
     urgencia = request.GET.get('urgencia', '')
     
     incidencias = Incidencia.objects.all()
@@ -27,4 +30,4 @@ def incidencias_list(request):
 
     }
 
-    return render(request, 'incidencias/list.html', context)
+    return render(request, 'listar_incidencias.html', context)

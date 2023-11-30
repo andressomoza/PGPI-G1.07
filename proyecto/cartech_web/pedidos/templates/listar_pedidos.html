@@ -6,8 +6,11 @@
 <div class="bg-light py-3">
     <div class="container">
         <div class="row">
-            <div class="col-md-12 mb-0"><a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <strong
-                    class="text-black">Tienda</strong></div>
+            {% with base_url="/pedidos/" %}
+            <div class="col-md-12 mb-0"><a href="{{ base_url }}">Pedidos</a> <span class="mx-2 mb-0">/</span> <strong
+                    class="text-black">Mis pedidos</strong></div>
+            {% endwith %}
+
         </div>
     </div>
 </div>
@@ -38,8 +41,8 @@
                     <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                         <div class="block-4 text-center border">
                             <div class="block-4-text p-4">
-                                <p class="mb-0">Coche: {{ pedido.eleccion.coche.marca }} {{ pedido.eleccion.coche.modelo }}</p>
-                                <p class="mb-0">Pedido: {{ pedido.status }}</p>
+                                <p class="mb-0"><a href="{{pedido.id}}" %}">Coche: {{ pedido.eleccion.coche.marca }} {{ pedido.eleccion.coche.modelo }}</a></p>
+                                <p class="mb-0">Estado: {{ pedido.status }}</p>
                             </div>
                         </div>
                     </div>

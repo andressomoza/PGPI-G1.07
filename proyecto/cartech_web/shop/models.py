@@ -49,6 +49,9 @@ class Eleccion(models.Model):
         total_coste_accesorios = self.accesorios.aggregate(total=models.Sum('precio'))['total'] or 0
         return precio_base + total_coste_accesorios
     
+    def get_absolute_url(self):
+        return reverse('pedidos:detalle_pedido', args=[self.id])
+    
         
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)

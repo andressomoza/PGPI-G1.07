@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render
 from .models import Pedido
 
 '''
@@ -27,4 +27,21 @@ def listar_pedidos(request):
 
     }
 
-    return render(request, 'list.html', context)
+    return render(request, 'listar_pedidos.html', context)
+
+def detalle_pedido(request, id):
+    pedido = get_object_or_404(Pedido, id=id)
+    coche = pedido.eleccion.coche
+    accesorios = []
+    precio_total = pedido.eleccion.get_precio_total
+    if pedido.eleccion.accesorios:
+        for accesorio in pedido.eleccion.accesorios:
+            accesorios.append(accesorio)
+    context = {
+        'pedido': pedido,
+        'coche':coche,
+        'accesorios': accesorios,
+        'precio_total':precio_total
+
+    }
+    return render(request, 'detalle_pedido.html', context)

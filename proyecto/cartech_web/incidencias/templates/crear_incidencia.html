@@ -1,14 +1,27 @@
 <!-- incidencias/templates/incidencias/crear_incidencia.html -->
-{% extends 'incidencias/base.html' %}
+{% extends "shop/base/base.html" %}
 
 {% block content %}
 <!-- Contenido específico de la creación de incidencias -->
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            {% with base_url="/incidencias/" %}
+            <div class="col-md-12 mb-0"><a href="{{ base_url }}">Incidencias</a> <span class="mx-2 mb-0">/</span> <strong
+                    class="text-black">Nueva incidencia</strong></div>
+            {% endwith %}
+
+        </div>
+    </div>
+</div>
+<body>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Crear Incidencia</h5>
+                        <br/>
                     <form method="post" action="{% url 'incidencias:crear_incidencia' %}" class="needs-validation"
                         novalidate>
                         {% csrf_token %}
@@ -19,13 +32,14 @@
                                 {{ form.descripcion.errors }}
                             </div>
                         </div>
+                        <br/>
                         <label for="urgencia">Tipo de urgencia</label>
                         <select class="form-control" id="urgencia" name="urgencia">
                             <option value="baja" {% if urgencia == 'baja' %}selected{% endif %}>Baja</option>
                             <option value="media" {% if urgencia == 'media' %}selected{% endif %}>Media</option>
                             <option value="alta" {% if urgencia == 'alta' %}selected{% endif %}>Alta</option>
                         </select>
-                        
+                        <br/>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
@@ -33,4 +47,5 @@
         </div>
     </div>
 </div>
+</body>
 {% endblock %}

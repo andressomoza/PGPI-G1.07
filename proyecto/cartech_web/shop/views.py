@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 #from cart.forms import CartAddProductForm
-from .models import Category, Product, Coche, Accesorio, Eleccion
-from django.db.models import Q
+from .models import  Coche, Accesorio, Eleccion
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
@@ -16,6 +15,8 @@ from django.http import HttpResponseRedirect
 #         '''
 #         return Product.objects.filter(created__lte=timezone.now()
 #         ).order_by('-created')[:5]
+def home(request):
+    return render(request,'shop/home.html')
 
 def cars_list(request):
     combustible = request.GET.get('combustible', '')
@@ -43,7 +44,7 @@ def cars_list(request):
         'consumo': consumo,
     }
 
-    return render(request, 'shop/cars/list.html', context)
+    return render(request, 'shop/cars/listar_coches.html', context)
 
 # class ProductListView(generic.ListView):
 #     template_name = 'shop/product/list.html'

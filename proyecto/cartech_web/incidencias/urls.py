@@ -5,6 +5,7 @@ from . import views
 app_name = 'incidencias'  # Agrega esta línea
 
 urlpatterns = [
-    path('listar_incidencias', views.incidencias_list, name='incidencias_list'),
-    path('crear_incidencia/', views.crear_incidencia, name='crear_incidencia'),
+    path('', views.pagina_base, name='base'),
+    path('listar_incidencias', views.listar_incidencias, name='listar_incidencias'),
+    path('crear_incidencia', views.crear_incidencia, name='crear_incidencia'),
 ]

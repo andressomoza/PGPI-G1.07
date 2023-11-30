@@ -5,6 +5,6 @@ from . import views
 app_name = 'pedidos'  # Agrega esta línea
 
 urlpatterns = [
-    #path('new', views.crear_pedido, name='crear_pedido'),
-    path('list', views.listar_pedidos, name='listar_pedidos'),
+    path('', views.listar_pedidos, name='listar_pedidos'),
+    path('<int:id>/', views.detalle_pedido, name='detalle_pedido'),
 ]
