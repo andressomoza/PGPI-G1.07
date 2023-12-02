@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 #from cart.forms import CartAddProductForm
 from .models import  Coche, Accesorio, Eleccion
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
+from .carrito import Carrito
 
 # from django.views import generic
 
@@ -85,6 +86,23 @@ def car_detail(request, id):
     }
     return render(request, 'shop/cars/detail.html', context)
 
+def agregar_eleccion(request, eleccion_id):
+    carrito = Carrito(request)
+    eleccion = Eleccion.objects.get(id=eleccion_id)
+    carrito.add(eleccion)
+    return redirect("shop:car_list")
+
+def eliminar_eleccion(request, eleccion_id):
+    carrito = Carrito(request)
+    eleccion = Eleccion.objects.get(id=eleccion_id)
+    carrito.remove(eleccion)
+    return redirect("shop:cars_list")
+
+
+def limpiar_carrito(request):
+    carrito = Carrito(request)
+    carrito.clear()
+    return redirect("shop:cars_list")
 
 # class ProductDetialView(generic.DetailView):
 
