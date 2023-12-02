@@ -3,6 +3,7 @@ from .models import  Coche, Accesorio, Eleccion
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 def home(request):
     return render(request,'shop/home.html')
@@ -38,31 +39,39 @@ def cars_list(request):
 
 @login_required
 def car_detail(request, id):
-    car = get_object_or_404(Coche, id=id)
+    coche = get_object_or_404(Coche, id=id)
     accesorios_disponibles = Accesorio.objects.all()
+    alerta = None
+    accesorios_seleccionados = []
 
     if request.method == 'POST':
         
         if 'confirmar_eleccion' in request.POST:
             accesorios_seleccionados_ids = request.POST.getlist('accesorios_seleccionados', [])
             accesorios_seleccionados = Accesorio.objects.filter(id__in=accesorios_seleccionados_ids)
-
+            
         elif 'comprar' in request.POST:
             accesorios_comprar_ids = request.POST.getlist('accesorios_comprar', [])
             accesorios_comprar = Accesorio.objects.filter(id__in=accesorios_comprar_ids)
-            eleccion = Eleccion(coche=car, usuario = request.user)
-            eleccion.save()
-            eleccion.accesorios.set(accesorios_comprar)
-            print('accesorios', eleccion.coche)
-            print('accesorios', eleccion.accesorios.all())
-            return HttpResponseRedirect('/')
+            eleccion_existente = Eleccion.objects.filter(
+                coche=coche,
+                usuario=request.user,
+                accesorios__in=accesorios_comprar,
+            ).annotate(accesorios_count=Count('accesorios')).filter(accesorios_count=len(accesorios_comprar)).first()
+            
+            if eleccion_existente:
+                alerta = "Ya existe una elección con los mismos accesorios, añada mas desde el carrito."
+            else:
+                eleccion = Eleccion(coche=coche, usuario = request.user)
+                eleccion.save()
+                eleccion.accesorios.set(accesorios_comprar)
+                return HttpResponseRedirect('/')
+        
 
-    else:
-        accesorios_seleccionados = []
-
-    precio_total = car.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
+    precio_total = coche.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
     context = {
-        'car': car,
+        'coche': coche,
+        'alerta':alerta,
         'accesorios_disponibles': accesorios_disponibles,
         'accesorios_seleccionados': accesorios_seleccionados,
         'precio_total': precio_total,

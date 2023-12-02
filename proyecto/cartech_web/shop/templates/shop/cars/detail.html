@@ -46,6 +46,11 @@
             <input type="hidden" name="accesorios_comprar" value="{{ accesorio.id }}">
           {% endfor %}
           <div class="col-12">
+            {% if alerta %}
+            <div class="alert alert-warning" role="alert">
+            {{ alerta }}
+            </div>
+            {% endif %}
             <button type="submit" class="btn btn-primary" name="comprar">Comprar</button>
           </div>
         </form>
