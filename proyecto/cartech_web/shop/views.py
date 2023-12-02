@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from .models import  Coche, Accesorio, Eleccion
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+
 
 def home(request):
     return render(request,'shop/home.html')
