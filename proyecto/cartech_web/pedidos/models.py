@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from shop.models import Eleccion, Usuario
+from shop.models import Eleccion
 
 class Pedido(models.Model):
     class Status(models.TextChoices):

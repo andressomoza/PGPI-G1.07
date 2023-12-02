@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-{{ car.name }}
+{{ coche.name }}
 {% endblock %}
 {% block content %}
 <div class="bg-light py-3">
@@ -10,7 +10,7 @@
     <div class="row">
       {% with base_url="/list" %}
       <div class="col-md-12 mb-0"><a href="{{ base_url }}">Coches</a> <span class="mx-2 mb-0">/</span> <strong
-          class="text-black">{{ car.marca }} {{ car.modelo }}</strong></div>
+          class="text-black">{{ coche.marca }} {{ coche.modelo }}</strong></div>
       {% endwith %}
     </div>
   </div>
@@ -21,12 +21,12 @@
     <div class="row">
 
       <div class="col-md-6">
-        <h2 class="text-black mr-2">{{ car.marca }} {{ car.modelo }}</h2>
-        <p>Consumo: {{ car.consumo }}</p>
-        <p>Combustible: {{ car.combustible }}</p>
-        <p>Conduccion: {{ car.conduccion }}</p>
-        <p>Caballos: {{ car.caballos }}</p>
-        <p><strong class="text-primary h4">Precio Base: {{ car.precio_inicial }}€</strong></p>
+        <h2 class="text-black mr-2">{{ coche.marca }} {{ coche.modelo }}</h2>
+        <p>Consumo: {{ coche.consumo }}</p>
+        <p>Combustible: {{ coche.combustible }}</p>
+        <p>Conduccion: {{ coche.conduccion }}</p>
+        <p>Caballos: {{ coche.caballos }}</p>
+        <p><strong class="text-primary h4">Precio Base: {{ coche.precio_inicial }}€</strong></p>
 
         {% if accesorios_seleccionados %}
         <h3>Accesorios:</h3>
@@ -42,6 +42,9 @@
         <p><strong class="text-primary h4">Precio total: {{ precio_total }}€</strong></p>
         <form id="comprar-form" method="post" class="row">
           {% csrf_token %}
+          {% for accesorio in accesorios_seleccionados %}
+            <input type="hidden" name="accesorios_comprar" value="{{ accesorio.id }}">
+          {% endfor %}
           <div class="col-12">
             <button type="submit" class="btn btn-primary" name="comprar">Comprar</button>
             <a href="{% url 'shop:add' value.coche.id %}">agregar al carrito</a>
