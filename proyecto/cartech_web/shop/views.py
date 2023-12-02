@@ -9,26 +9,29 @@ from django.db.models import Count
 def home(request):
     return render(request,'shop/home.html')
 
+def selector(request):
+    return render(request,'shop/coches/selector.html')
+
 @login_required
-def cars_list(request):
+def listado_coches(request):
     combustible = request.GET.get('combustible', '')
     precio_maximo = request.GET.get('precio_maximo', '')
     tipo_conduccion = request.GET.get('conduccion', '')
     consumo = request.GET.get('consumo', '')
     caballos = request.GET.get('caballos', '')
-    cars = Coche.objects.all()
+    coches = Coche.objects.all()
     if combustible:
-        cars = cars.filter(combustible=combustible)
+        coches = coches.filter(combustible=combustible)
     if precio_maximo:
-        cars = cars.filter(precio_inicial__lte=precio_maximo)
+        coches = coches.filter(precio_inicial__lte=precio_maximo)
     if tipo_conduccion:
-        cars = cars.filter(conduccion=tipo_conduccion)
+        coches = coches.filter(conduccion=tipo_conduccion)
     if consumo:
-        cars = cars.filter(consumo__lte = consumo)
+        coches = coches.filter(consumo__lte = consumo)
     if caballos:
-        cars = cars.filter(caballos__lte =caballos)
+        coches = coches.filter(caballos__lte =caballos)
     context = {
-        'cars': cars,
+        'coches': coches,
         'combustible': combustible,
         'precio_maximo': precio_maximo,
         'conduccion': tipo_conduccion,
@@ -36,10 +39,89 @@ def cars_list(request):
         'consumo': consumo,
     }
 
-    return render(request, 'shop/cars/listar_coches.html', context)
+    return render(request, 'shop/coches/listar_coches.html', context)
 
 @login_required
-def car_detail(request, id):
+def listado_electricos(request):
+    precio_maximo = request.GET.get('precio_maximo', '')
+    tipo_conduccion = request.GET.get('conduccion', '')
+    consumo = request.GET.get('consumo', '')
+    caballos = request.GET.get('caballos', '')
+    coches = Coche.objects.filter(combustible = 'electrico')
+    if precio_maximo:
+        coches = coches.filter(precio_inicial__lte=precio_maximo)
+    if tipo_conduccion:
+        coches = coches.filter(conduccion=tipo_conduccion)
+    if consumo:
+        coches = coches.filter(consumo__lte = consumo)
+    if caballos:
+        coches = coches.filter(caballos__lte =caballos)
+    context = {
+        'coches': coches,
+        'precio_maximo': precio_maximo,
+        'conduccion': tipo_conduccion,
+        'caballos': caballos,
+        'consumo': consumo,
+    }
+
+    return render(request, 'shop/coches/listar_electricos.html', context)
+
+@login_required
+def listado_hibridos(request):
+    precio_maximo = request.GET.get('precio_maximo', '')
+    tipo_conduccion = request.GET.get('conduccion', '')
+    consumo = request.GET.get('consumo', '')
+    caballos = request.GET.get('caballos', '')
+    coches = Coche.objects.filter(combustible = 'hibrido')
+    if precio_maximo:
+        coches = coches.filter(precio_inicial__lte=precio_maximo)
+    if tipo_conduccion:
+        coches = coches.filter(conduccion=tipo_conduccion)
+    if consumo:
+        coches = coches.filter(consumo__lte = consumo)
+    if caballos:
+        coches = coches.filter(caballos__lte =caballos)
+    context = {
+        'coches': coches,
+        'precio_maximo': precio_maximo,
+        'conduccion': tipo_conduccion,
+        'caballos': caballos,
+        'consumo': consumo,
+    }
+
+    return render(request, 'shop/coches/listar_hibridos.html', context)
+
+@login_required
+def listado_combustible(request):
+    coches = Coche.objects.filter(combustible__in=['gasolina', 'diesel'])
+    combustible = request.GET.get('combustible', '')
+    precio_maximo = request.GET.get('precio_maximo', '')
+    tipo_conduccion = request.GET.get('conduccion', '')
+    consumo = request.GET.get('consumo', '')
+    caballos = request.GET.get('caballos', '')
+    if combustible:
+        coches = coches.filter(combustible=combustible)
+    if precio_maximo:
+        coches = coches.filter(precio_inicial__lte=precio_maximo)
+    if tipo_conduccion:
+        coches = coches.filter(conduccion=tipo_conduccion)
+    if consumo:
+        coches = coches.filter(consumo__lte = consumo)
+    if caballos:
+        coches = coches.filter(caballos__lte =caballos)
+    context = {
+        'coches': coches,
+        'combustible':combustible,
+        'precio_maximo': precio_maximo,
+        'conduccion': tipo_conduccion,
+        'caballos': caballos,
+        'consumo': consumo,
+    }
+
+    return render(request, 'shop/coches/listar_electricos.html', context)
+
+@login_required
+def detalles(request, id):
     coche = get_object_or_404(Coche, id=id)
     accesorios_disponibles = Accesorio.objects.all()
     alerta = None
@@ -77,4 +159,4 @@ def car_detail(request, id):
         'accesorios_seleccionados': accesorios_seleccionados,
         'precio_total': precio_total,
     }
-    return render(request, 'shop/cars/detail.html', context)
+    return render(request, 'shop/coches/detail.html', context)

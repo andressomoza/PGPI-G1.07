@@ -1,0 +1,99 @@
+{% extends "shop/base/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{% endblock %}
+{% block content %}
+<div class="bg-light py-3">
+  <div class="container">
+    <div class="row">
+      {% with base_url="/list" %}
+      <div class="col-md-12 mb-0"><a href="{{ base_url }}">Coches</a> <span class="mx-2 mb-0">/</span> <strong
+          class="text-black">{{ coche.marca }} {{ coche.modelo }}</strong></div>
+      {% endwith %}
+    </div>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-md-6">
+        <h2 class="text-black mr-2">{{ coche.marca }} {{ coche.modelo }}</h2>
+        {% if coche.imagen %}
+        <img src="{{ coche.imagen.url }}" alt="{{ coche.marca }}" style="max-width: 100%;">
+        {% else %}
+        <p>No hay imagen disponible</p>
+        {% endif %}
+        <p>Consumo: {{ coche.consumo }}</p>
+        <p>Combustible: {{ coche.combustible }}</p>
+        <p>Conduccion: {{ coche.conduccion }}</p>
+        <p>Caballos: {{ coche.caballos }}</p>
+        <p><strong class="text-primary h4">Precio Base: {{ coche.precio_inicial }}€</strong></p>
+
+        {% if accesorios_seleccionados %}
+        <h3>Accesorios:</h3>
+        <ul>
+          {% for accesorio in accesorios_seleccionados %}
+          <li>{{ accesorio.nombre }} - {{ accesorio.precio }}€</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No se han seleccionado accesorios para este coche.</p>
+        {% endif %}
+
+        <p><strong class="text-primary h4">Precio total: {{ precio_total }}€</strong></p>
+        <form id="comprar-form" method="post" class="row">
+          {% csrf_token %}
+          {% for accesorio in accesorios_seleccionados %}
+            <input type="hidden" name="accesorios_comprar" value="{{ accesorio.id }}">
+          {% endfor %}
+          <div class="col-12">
+            {% if alerta %}
+            <div class="alert alert-warning" role="alert">
+            {{ alerta }}
+            </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary" name="comprar">Comprar</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <h3>Accesorios Disponibles:</h3>
+        <form id="accesorios-form" method="post" class="row">
+          {% csrf_token %}
+          {% for accesorio in accesorios_disponibles %}
+          <div class="col-sm-6 col-lg-4 mb-4">
+            <div class="block-4 text-center border">
+              <div class="block-4-text p-4">
+                {% if accesorio.imagen %}
+                <img src="{{ accesorio.imagen.url }}" alt="{{ accesorio.nombre }}" style="max-width: 100%;">
+                {% else %}
+                <p>No hay imagen disponible</p>
+                {% endif %}
+                <p>{{ accesorio.nombre }} </p>
+                <p>{{ accesorio.precio }}€ </p>
+                <label class="d-block">
+                  <input type="checkbox" name="accesorios_seleccionados" value="{{ accesorio.id }}">
+                  Seleccionar
+                </label>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary" name="confirmar_eleccion">Confirmar elección</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+</div>
+
+
+{% endblock %}
