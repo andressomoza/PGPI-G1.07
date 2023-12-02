@@ -52,6 +52,7 @@
             </div>
             {% endif %}
             <button type="submit" class="btn btn-primary" name="comprar">Comprar</button>
+            <a href="{% url 'shop:add' value.coche.id %}">agregar al carrito</a>
           </div>
         </form>
       </div>
