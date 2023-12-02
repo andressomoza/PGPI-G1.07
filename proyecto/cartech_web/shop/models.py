@@ -6,6 +6,8 @@ class Accesorio(models.Model):
     
     precio = models.IntegerField()
     nombre = models.CharField(max_length=50)
+    imagen = models.ImageField(upload_to='accesorios/', default='accesorios/default.jpg')
+    
         
 class Coche(models.Model):
     
@@ -26,6 +28,7 @@ class Coche(models.Model):
     consumo = models.FloatField()
     caballos = models.IntegerField()
     precio_inicial = models.IntegerField()
+    imagen = models.ImageField(upload_to='coches/', default='coches/default.jpg')
     
     def get_absolute_url(self):
         return reverse('shop:car_detail', args=[self.id])

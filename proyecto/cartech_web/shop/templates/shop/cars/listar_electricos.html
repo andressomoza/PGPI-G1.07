@@ -24,17 +24,6 @@
                     <form method="get" id="filtrado">
                         <h3 class="text-black mb-3">Filtrar</h3>
                         <div class="form-group">
-                            <label for="combustible">Tipo de Combustible</label>
-                            <select class="form-control" id="combustible" name="combustible">
-                                <option value="" {% if not combustible %}selected{% endif %}>Todos</option>
-                                <option value="gasolina" {% if combustible == 'gasolina' %}selected{% endif %}>Gasolina
-                                </option>
-                                <option value="diesel" {% if combustible == 'diesel' %}selected{% endif %}>Diesel</option>
-                                <option value="hibrido" {% if combustible == 'hibrido' %}selected{% endif %}>Híbrido
-                                </option>
-                                <option value="electrico" {% if combustible == 'electrico' %}selected{% endif %}>Eléctrico
-                                </option>
-                            </select>
 
                             <label for="combustible">Tipo de Conducción</label>
                             <select class="form-control" id="conduccion" name="conduccion">

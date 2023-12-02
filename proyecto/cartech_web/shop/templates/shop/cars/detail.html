@@ -2,7 +2,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-{{ coche.name }}
 {% endblock %}
 {% block content %}
 <div class="bg-light py-3">
@@ -22,6 +21,11 @@
 
       <div class="col-md-6">
         <h2 class="text-black mr-2">{{ coche.marca }} {{ coche.modelo }}</h2>
+        {% if coche.imagen %}
+        <img src="{{ coche.imagen.url }}" alt="{{ coche.marca }}" style="max-width: 100%;">
+        {% else %}
+        <p>No hay imagen disponible</p>
+        {% endif %}
         <p>Consumo: {{ coche.consumo }}</p>
         <p>Combustible: {{ coche.combustible }}</p>
         <p>Conduccion: {{ coche.conduccion }}</p>
@@ -52,7 +56,6 @@
             </div>
             {% endif %}
             <button type="submit" class="btn btn-primary" name="comprar">Comprar</button>
-            <a href="{% url 'shop:add' value.coche.id %}">agregar al carrito</a>
           </div>
         </form>
       </div>
@@ -64,6 +67,11 @@
           <div class="col-sm-6 col-lg-4 mb-4">
             <div class="block-4 text-center border">
               <div class="block-4-text p-4">
+                {% if accesorio.imagen %}
+                <img src="{{ accesorio.imagen.url }}" alt="{{ accesorio.nombre }}" style="max-width: 100%;">
+                {% else %}
+                <p>No hay imagen disponible</p>
+                {% endif %}
                 <p>{{ accesorio.nombre }} </p>
                 <p>{{ accesorio.precio }}€ </p>
                 <label class="d-block">
