@@ -14,12 +14,21 @@ def selector(request):
 
 @login_required
 def listado_coches(request):
+    con_stock = request.GET.get('con_stock', False)
+    marca = request.GET.get('marca', '')
+    modelo = request.GET.get('modelo', '')
     combustible = request.GET.get('combustible', '')
     precio_maximo = request.GET.get('precio_maximo', '')
     tipo_conduccion = request.GET.get('conduccion', '')
     consumo = request.GET.get('consumo', '')
     caballos = request.GET.get('caballos', '')
     coches = Coche.objects.all()
+    if con_stock:
+        coches = coches.filter(stock__gt=0)
+    if marca:
+        coches = coches.filter(marca__icontains=marca)
+    if modelo:
+        coches = coches.filter(modelo__icontains=modelo)
     if combustible:
         coches = coches.filter(combustible=combustible)
     if precio_maximo:
@@ -32,6 +41,9 @@ def listado_coches(request):
         coches = coches.filter(caballos__lte =caballos)
     context = {
         'coches': coches,
+        'marca': marca,
+        'modelo': modelo,
+        'con_stock': con_stock,
         'combustible': combustible,
         'precio_maximo': precio_maximo,
         'conduccion': tipo_conduccion,
@@ -43,11 +55,20 @@ def listado_coches(request):
 
 @login_required
 def listado_electricos(request):
+    con_stock = request.GET.get('con_stock', False)
+    marca = request.GET.get('marca', '')
+    modelo = request.GET.get('modelo', '')
     precio_maximo = request.GET.get('precio_maximo', '')
     tipo_conduccion = request.GET.get('conduccion', '')
     consumo = request.GET.get('consumo', '')
     caballos = request.GET.get('caballos', '')
     coches = Coche.objects.filter(combustible = 'electrico')
+    if con_stock:
+        coches = coches.filter(stock__gt=0)
+    if marca:
+        coches = coches.filter(marca__icontains=marca)
+    if modelo:
+        coches = coches.filter(modelo__icontains=modelo)
     if precio_maximo:
         coches = coches.filter(precio_inicial__lte=precio_maximo)
     if tipo_conduccion:
@@ -58,6 +79,9 @@ def listado_electricos(request):
         coches = coches.filter(caballos__lte =caballos)
     context = {
         'coches': coches,
+        'marca': marca,
+        'con_stock': con_stock,
+        'modelo': modelo,
         'precio_maximo': precio_maximo,
         'conduccion': tipo_conduccion,
         'caballos': caballos,
@@ -68,11 +92,20 @@ def listado_electricos(request):
 
 @login_required
 def listado_hibridos(request):
+    con_stock = request.GET.get('con_stock', False)
+    marca = request.GET.get('marca', '')
+    modelo = request.GET.get('modelo', '')
     precio_maximo = request.GET.get('precio_maximo', '')
     tipo_conduccion = request.GET.get('conduccion', '')
     consumo = request.GET.get('consumo', '')
     caballos = request.GET.get('caballos', '')
     coches = Coche.objects.filter(combustible = 'hibrido')
+    if con_stock:
+        coches = coches.filter(stock__gt=0)
+    if marca:
+        coches = coches.filter(marca__icontains=marca)
+    if modelo:
+        coches = coches.filter(modelo__icontains=modelo)
     if precio_maximo:
         coches = coches.filter(precio_inicial__lte=precio_maximo)
     if tipo_conduccion:
@@ -83,6 +116,9 @@ def listado_hibridos(request):
         coches = coches.filter(caballos__lte =caballos)
     context = {
         'coches': coches,
+        'marca': marca,
+        'con_stock': con_stock,
+        'modelo': modelo,
         'precio_maximo': precio_maximo,
         'conduccion': tipo_conduccion,
         'caballos': caballos,
@@ -93,12 +129,21 @@ def listado_hibridos(request):
 
 @login_required
 def listado_combustible(request):
+    con_stock = request.GET.get('con_stock', False)
+    marca = request.GET.get('marca', '')
+    modelo = request.GET.get('modelo', '')
     coches = Coche.objects.filter(combustible__in=['gasolina', 'diesel'])
     combustible = request.GET.get('combustible', '')
     precio_maximo = request.GET.get('precio_maximo', '')
     tipo_conduccion = request.GET.get('conduccion', '')
     consumo = request.GET.get('consumo', '')
     caballos = request.GET.get('caballos', '')
+    if con_stock:
+        coches = coches.filter(stock__gt=0)
+    if marca:
+        coches = coches.filter(marca__icontains=marca)
+    if modelo:
+        coches = coches.filter(modelo__icontains=modelo)
     if combustible:
         coches = coches.filter(combustible=combustible)
     if precio_maximo:
@@ -111,6 +156,9 @@ def listado_combustible(request):
         coches = coches.filter(caballos__lte =caballos)
     context = {
         'coches': coches,
+        'marca': marca,
+        'con_stock': con_stock,
+        'modelo': modelo,
         'combustible':combustible,
         'precio_maximo': precio_maximo,
         'conduccion': tipo_conduccion,
