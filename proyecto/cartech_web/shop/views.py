@@ -174,6 +174,7 @@ def detalles(request, id):
     accesorios_disponibles = Accesorio.objects.all()
     alerta = None
     accesorios_seleccionados = []
+    cantidad= 1
 
     if request.method == 'POST':
         
@@ -184,6 +185,7 @@ def detalles(request, id):
         elif 'comprar' in request.POST:
             accesorios_comprar_ids = request.POST.getlist('accesorios_comprar', [])
             accesorios_comprar = Accesorio.objects.filter(id__in=accesorios_comprar_ids)
+            cantidad = int(request.POST.get('cantidad', 1))
             eleccion_existente = Eleccion.objects.filter(
                 coche=coche,
                 usuario=request.user,
@@ -193,7 +195,7 @@ def detalles(request, id):
             if eleccion_existente:
                 alerta = "Ya existe una elección con los mismos accesorios, añada mas desde el carrito."
             else:
-                eleccion = Eleccion(coche=coche, usuario = request.user)
+                eleccion = Eleccion(coche=coche, usuario = request.user, cantidad = cantidad)
                 eleccion.save()
                 eleccion.accesorios.set(accesorios_comprar)
                 return HttpResponseRedirect('/')
@@ -203,6 +205,7 @@ def detalles(request, id):
     context = {
         'coche': coche,
         'alerta':alerta,
+        'cantidad':cantidad,
         'accesorios_disponibles': accesorios_disponibles,
         'accesorios_seleccionados': accesorios_seleccionados,
         'precio_total': precio_total,

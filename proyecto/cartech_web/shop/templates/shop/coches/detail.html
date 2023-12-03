@@ -60,7 +60,10 @@
             </div>
             {% endif %}
             {% if coche.stock > 0 %}
-                <button type="submit" class="btn btn-primary" name="comprar">Añadir a la cesta</button>
+              <label for="cantidad">Cantidad:</label>
+              <input type="number" name="cantidad" id="cantidad" value="1" min="1" max="{{ coche.stock }}">
+              <br>
+              <button type="submit" class="btn btn-primary" name="comprar">Añadir a la cesta</button>
             {% else %}
                 <button type="button" class="btn btn-secondary" disabled>Producto Agotado</button>
             {% endif %}

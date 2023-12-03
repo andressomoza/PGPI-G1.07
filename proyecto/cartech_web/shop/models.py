@@ -46,7 +46,7 @@ class Eleccion(models.Model):
     def get_precio_total(self):
         precio_base = self.coche.precio_inicial
         total_coste_accesorios = self.accesorios.aggregate(total=models.Sum('precio'))['total'] or 0
-        return precio_base + total_coste_accesorios
+        return (precio_base + total_coste_accesorios)*self.cantidad
     
     def get_absolute_url(self):
         return reverse('pedidos:detalle_pedido', args=[self.id])
