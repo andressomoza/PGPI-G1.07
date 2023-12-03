@@ -9,8 +9,10 @@ def crear_incidencia(request):
     if request.method == 'POST':
         form = IncidenciaForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('listar_incidencias')  # Puedes definir esta vista
+            incidencia = form.save(commit=False)
+            incidencia.usuario = request.user  # Asigna el usuario actual
+            incidencia.save()
+            return redirect('/incidencias/me') # Puedes definir esta vista
     else:
         form = IncidenciaForm()
 
