@@ -41,7 +41,7 @@ class Coche(models.Model):
         
 class Eleccion(models.Model):
     
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
     coche = models.ForeignKey(Coche, related_name='elecciones', on_delete=models.CASCADE)
     accesorios = models.ManyToManyField(Accesorio, related_name='elecciones',blank=True)
     cantidad = models.IntegerField(default=1)
