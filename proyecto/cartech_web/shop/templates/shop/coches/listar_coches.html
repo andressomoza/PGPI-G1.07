@@ -24,13 +24,26 @@
                     <form method="get" id="filtrado">
                         <h3 class="text-black mb-3">Filtrar</h3>
                         <div class="form-group">
+                            <input class="form-check-input" type="checkbox" id="con_stock" name="con_stock" {% if con_stock %}checked{% endif %}>
+                            <label class="form-check-label" for="con_stock">
+                                Mostrar solo coches con stock
+                            </label>
+                            <br>
+                            <br>
+                            <label for="modelo">Marca</label>
+                            <input type="text" class="form-control" id="marca" name="marca" value="{{ marca }}">
+                            <label for="modelo">Modelo</label>
+                            <input type="text" class="form-control" id="modelo" name="modelo" value="{{ modelo }}">
                             <label for="combustible">Tipo de Combustible</label>
                             <select class="form-control" id="combustible" name="combustible">
                                 <option value="" {% if not combustible %}selected{% endif %}>Todos</option>
-                                <option value="gasolina" {% if combustible == 'gasolina' %}selected{% endif %}>Gasolina</option>
+                                <option value="gasolina" {% if combustible == 'gasolina' %}selected{% endif %}>Gasolina
+                                </option>
                                 <option value="diesel" {% if combustible == 'diesel' %}selected{% endif %}>Diesel</option>
-                                <option value="hibrido" {% if combustible == 'hibrido' %}selected{% endif %}>Híbrido</option>
-                                <option value="electrico" {% if combustible == 'electrico' %}selected{% endif %}>Eléctrico</option>
+                                <option value="hibrido" {% if combustible == 'hibrido' %}selected{% endif %}>Híbrido
+                                </option>
+                                <option value="electrico" {% if combustible == 'electrico' %}selected{% endif %}>Eléctrico
+                                </option>
                             </select>
 
                             <label for="combustible">Tipo de Conducción</label>
@@ -59,21 +72,29 @@
                 </div>
                 <div class="col-md-9 order-2">
                     <div class="row mb-5">
-                        {% for car in cars %}
+                        {% for coche in coches %}
                         <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                             <div class="block-4 text-center border">
                                 <div class="block-4-text p-4">
-                                    <h3><a href="{{ car.get_absolute_url }}">{{car.marca}} {{ car.modelo }}</a></h3>
-                                    <p class="mb-0">Consumo: {{ car.consumo }}</p>
-                                    <p class="text-primary font-weight-bold">Precio base: {{ car.precio_inicial }}€</p>
+                                    {% if coche.imagen %}
+                                    <img src="{{ coche.imagen.url }}" alt="{{ coche.marca }}" style="max-width: 100%;">
+                                    {% else %}
+                                    <p>No hay imagen disponible</p>
+                                    {% endif %}
+                                    <br/>
+                                    <h3><a href="{{ coche.get_absolute_url }}">{{coche.marca}} {{ coche.modelo }}</a></h3>
+                                    <p class="mb-0">Consumo: {{ coche.consumo }}</p>
+                                    <p class="text-primary font-weight-bold">Precio base: {{ coche.precio_inicial }}€</p>
+                                    {% if coche.stock == 0 %}
+                                        <p class="text-danger">¡Producto Agotado!</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
-
-
                 </div>
+                
 
             </div>
         </div>

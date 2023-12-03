@@ -6,5 +6,7 @@ app_name = 'pedidos'  # Agrega esta línea
 
 urlpatterns = [
     path('', views.listar_pedidos, name='listar_pedidos'),
+    path('buscar', views.buscar_pedido, name='buscar_pedidos'),
+    path('me', views.mis_pedidos, name='mis_pedidos'),
     path('<int:id>/', views.detalle_pedido, name='detalle_pedido'),
 ]

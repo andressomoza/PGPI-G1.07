@@ -1,0 +1,23 @@
+<!-- buscar_pedido.html -->
+
+{% extends "shop/base/base.html" %}
+{% load static %}
+{% block title %}
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h2>Buscar mi pedido</h2>
+    <br>
+
+    <form method="post">
+      {% csrf_token %}
+      <label for="id_pedido">ID del Pedido:</label>
+      
+      <input type="text" id="id_pedido" name="id_pedido" required>
+      <br>
+      <br>
+      <button type="submit" class="btn btn-primary btn-sm">¡Encuentra tu pedido!</button>
+    </form>
+  </div>
+{% endblock %}
