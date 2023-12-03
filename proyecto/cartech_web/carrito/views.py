@@ -21,9 +21,12 @@ def home(request):
 def listar_carrito(request):
     usuario = request.user.id
     elecciones = Eleccion.objects.all()
-    elecciones = elecciones.filter(usuario_id=usuario).values()
+    elecciones = elecciones.filter(usuario_id=usuario)
 
-    return render(request, 'listar_carrito.html', {'elecciones': list(elecciones)})
+    for eleccion in elecciones:
+        print(eleccion.)
+
+    return render(request, 'listar_carrito.html', {'elecciones': elecciones})
 
 
 class PaymentView(View):
