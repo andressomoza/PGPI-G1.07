@@ -26,6 +26,29 @@ def crear_coche(request):
 
     return render(request, 'coches/crear_coche.html', {'form': form})
 
+@user_passes_test(is_admin)
+def editar_coche(request, id):
+    coche = get_object_or_404(Coche, id=id)
+
+    if request.method == 'POST':
+        form = CocheForm(request.POST, request.FILES, instance=coche)
+        if form.is_valid():
+            form.save()
+            return redirect(request.META.get('HTTP_REFERER', '/list/all'))  # Ajusta la redirección según tus necesidades
+    else:
+        form = CocheForm(instance=coche)
+
+    return render(request, 'coches/editar_coche.html', {'form': form, 'coche': coche})
+
+@user_passes_test(is_admin)
+def borrar_coche(request, id):
+    coche = get_object_or_404(Coche, id=id)
+
+    if request.method == 'POST':
+        coche.delete()
+        return HttpResponseRedirect('/list/all')  # Ajusta la redirección según tus necesidades
+
+    return render(request, 'coches/borrar_coche.html', {'coche': coche})
 
 def listado_coches(request):
     con_stock = request.GET.get('con_stock', False)
@@ -182,7 +205,6 @@ def listado_combustible(request):
 
     return render(request, 'coches/listar_combustible.html', context)
 
-@login_required
 def detalles(request, id):
     coche = get_object_or_404(Coche, id=id)
     accesorios_disponibles = Accesorio.objects.all()

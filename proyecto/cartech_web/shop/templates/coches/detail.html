@@ -59,17 +59,25 @@
             {{ alerta }}
             </div>
             {% endif %}
-            {% if coche.stock > 0 %}
-              <label for="cantidad">Cantidad:</label>
-              <input type="number" name="cantidad" id="cantidad" value="1" min="1" max="{{ coche.stock }}">
-              <br>
-              <button type="submit" class="btn btn-primary" name="comprar">Añadir a la cesta</button>
+            {% if user.is_authenticated and user.is_staff %}
+              <a href="{% url "shop:editar_coche" coche.id %}"><button type="button" class="btn btn-primary" name="editar">Editar</button></a>
+              <a href="{% url "shop:borrar_coche" coche.id %}"><button type="button" class="btn btn-primary" name="editar">Eliminar</button></a>
+
             {% else %}
+              {% if coche.stock > 0 %}
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" name="cantidad" id="cantidad" value="1" min="1" max="{{ coche.stock }}">
+                <br>
+                <button type="submit" class="btn btn-primary" name="comprar">Añadir a la cesta</button>
+              {% else %}
                 <button type="button" class="btn btn-secondary" disabled>Producto Agotado</button>
-            {% endif %}
+              {% endif %}
+            {% endif %} 
           </div>
         </form>
       </div>
+      {% if user.is_authenticated and user.is_staff %}
+      {% else %}
       <div class="col-md-6">
         <h3>Accesorios Disponibles:</h3>
         <form id="accesorios-form" method="post" class="row">
@@ -98,6 +106,7 @@
           </div>
         </form>
       </div>
+      {% endif %} 
     </div>
   </div>
 </div>
