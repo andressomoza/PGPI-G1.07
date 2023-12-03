@@ -11,12 +11,7 @@ def home(request):
 #@login_required
 def listar_carrito(request):
     usuario = request.user.id
-    print(usuario)
     elecciones = Eleccion.objects.all()
-    print("TODAS")
-    print(elecciones.values())
     elecciones = elecciones.filter(usuario_id=usuario).values()
-    print("LAS MIAS:")
-    print(elecciones.values())
 
     return render(request, 'listar_carrito.html', {'elecciones': list(elecciones)})
