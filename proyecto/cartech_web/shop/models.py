@@ -11,7 +11,8 @@ class Accesorio(models.Model):
     stock = models.IntegerField()
     nombre = models.CharField(max_length=50)
     imagen = models.ImageField(upload_to='accesorios/', default='accesorios/default.jpg')
-    
+    def get_absolute_url(self):
+        return reverse('shop:detalles_accesorio', args=[self.id])
         
 class Coche(models.Model):
     
@@ -36,7 +37,7 @@ class Coche(models.Model):
     imagen = models.ImageField(upload_to='coches/', default='coches/default.jpg')
     
     def get_absolute_url(self):
-        return reverse('shop:car_detail', args=[self.id])
+        return reverse('shop:detalles_coche', args=[self.id])
     
         
 class Eleccion(models.Model):

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from .forms import CocheForm
+from .forms import CocheForm, AccesorioForm
 from django.contrib.auth.decorators import user_passes_test
 from cartech_web.views import is_admin
 
@@ -13,6 +13,73 @@ def home(request):
 
 def selector(request):
     return render(request,'coches/selector.html')
+
+@user_passes_test(is_admin)
+def crear_accesorio(request):
+    if request.method == 'POST':
+        form = AccesorioForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/accesorios/list')   # Puedes definir esta vista
+    else:
+        form = AccesorioForm()
+
+    return render(request, 'accesorios/crear_accesorio.html', {'form': form})
+
+@user_passes_test(is_admin)
+def editar_accesorio(request, id):
+    accesorio = get_object_or_404(Accesorio, id=id)
+
+    if request.method == 'POST':
+        form = AccesorioForm(request.POST, request.FILES, instance=accesorio)
+        if form.is_valid():
+            form.save()
+            return redirect(request.META.get('HTTP_REFERER', '/list/all'))  # Ajusta la redirección según tus necesidades
+    else:
+        form = AccesorioForm(instance=accesorio)
+
+    return render(request, 'accesorios/editar_accesorio.html', {'form': form, 'accesorio': accesorio})
+
+@user_passes_test(is_admin)
+def borrar_accesorio(request, id):
+    accesorio = get_object_or_404(Accesorio, id=id)
+
+    if request.method == 'POST':
+        accesorio.delete()
+        return HttpResponseRedirect('/list/accesorios')  # Ajusta la redirección según tus necesidades
+
+    return render(request, 'accesorios/borrar_accesorio.html', {'accesorio': accesorio})
+
+def listado_accesorios(request):
+    con_stock = request.GET.get('con_stock', False)
+    nombre = request.GET.get('nombre', '')
+    precio_maximo = request.GET.get('precio_maximo', '')
+    accesorios = Accesorio.objects.all()
+    if con_stock:
+        accesorios = accesorios.filter(stock__gt=0)
+    if nombre:
+        accesorios = accesorios.filter(nombre__icontains=nombre)
+    if precio_maximo:
+        accesorios = accesorios.filter(precio__lte = precio_maximo)
+
+    context = {
+        'accesorios': accesorios,
+        'nombre': nombre,
+        'con_stock': con_stock,
+        'precio_maximo': precio_maximo,
+
+    }
+
+    return render(request, 'accesorios/listar_accesorios.html', context)
+
+def detalles_accesorio(request, id):
+    accesorio = get_object_or_404(Accesorio, id=id)
+        
+    context = {
+        'accesorio': accesorio,
+
+    }
+    return render(request, 'accesorios/detalle.html', context)
 
 @user_passes_test(is_admin)
 def crear_coche(request):
@@ -46,7 +113,7 @@ def borrar_coche(request, id):
 
     if request.method == 'POST':
         coche.delete()
-        return HttpResponseRedirect('/list/all')  # Ajusta la redirección según tus necesidades
+        return HttpResponseRedirect('/coches/list')  # Ajusta la redirección según tus necesidades
 
     return render(request, 'coches/borrar_coche.html', {'coche': coche})
 
@@ -90,7 +157,6 @@ def listado_coches(request):
 
     return render(request, 'coches/listar_coches.html', context)
 
-@login_required
 def listado_electricos(request):
     con_stock = request.GET.get('con_stock', False)
     marca = request.GET.get('marca', '')
@@ -127,7 +193,6 @@ def listado_electricos(request):
 
     return render(request, 'coches/listar_electricos.html', context)
 
-@login_required
 def listado_hibridos(request):
     con_stock = request.GET.get('con_stock', False)
     marca = request.GET.get('marca', '')
@@ -164,7 +229,6 @@ def listado_hibridos(request):
 
     return render(request, 'coches/listar_hibridos.html', context)
 
-@login_required
 def listado_combustible(request):
     con_stock = request.GET.get('con_stock', False)
     marca = request.GET.get('marca', '')
@@ -205,7 +269,7 @@ def listado_combustible(request):
 
     return render(request, 'coches/listar_combustible.html', context)
 
-def detalles(request, id):
+def detalles_coche(request, id):
     coche = get_object_or_404(Coche, id=id)
     accesorios_disponibles = Accesorio.objects.all()
     alerta = None
