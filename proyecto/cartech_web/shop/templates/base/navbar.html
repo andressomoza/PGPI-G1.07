@@ -37,20 +37,46 @@
             </div>
         </div>
     </div>
+    {% if user.is_authenticated %}
+        {% if user.is_staff%}
+        <nav class="site-navigation text-right text-md-center" role="navigation">
+            <div class="container">
+                <ul class="site-menu js-clone-nav d-none d-md-block">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="{% url "shop:crear_coche" %}">Coches</a></li>
+                    <li><a href="/incidencias/">Accesorios</a></li>
+                    <li><a href="{% url "pedidos:mis_pedidos" %}">Pedidos</a></li>
+                    <li><a href="{% url "pedidos:buscar_pedido" %}">Incidencias</a></li>
+                </ul>
+            </div>
+        </nav>
+        {% else %}
+        <nav class="site-navigation text-right text-md-center" role="navigation">
+            <div class="container">
+                <ul class="site-menu js-clone-nav d-none d-md-block">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="{% url "shop:selector" %}">Configurador coches</a></li>
+                    <li><a href="/incidencias/">Incidencias</a></li>
+                    <li><a href="{% url "pedidos:mis_pedidos" %}">Mis pedidos</a></li>
+                    <li><a href="shop.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+        {% endif %} 
+    {% else %}
     <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
             <ul class="site-menu js-clone-nav d-none d-md-block">
                 <li><a href="/">Home</a></li>
                 <li><a href="{% url "shop:selector" %}">Configurador coches</a></li>
                 <li><a href="/incidencias/">Incidencias</a></li>
-                {% if user.is_authenticated %}
                 <li><a href="{% url "pedidos:mis_pedidos" %}">Mis pedidos</a></li>
-                {% else %}
                 <li><a href="{% url "pedidos:buscar_pedido" %}">Pedidos</a></li>
-                {% endif %}
                 <li><a href="shop.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
     </nav>
+    {% endif %} 
 </header>

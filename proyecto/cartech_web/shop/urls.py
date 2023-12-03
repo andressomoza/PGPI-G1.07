@@ -6,6 +6,7 @@ app_name = 'shop'
 urlpatterns = [
     #path('', views.product_list, name='product_list'),
     path('', views.home, name='home'),
+    path('new', views.crear_coche, name='crear_coche'),
     path('selector', views.selector, name='selector'),
     path('list/all', views.listado_coches, name='listado_coches'),
     path('list/combustible', views.listado_combustible, name='listado_combustible'),

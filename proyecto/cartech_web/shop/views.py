@@ -4,15 +4,29 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-
+from .forms import CocheForm
+from django.contrib.auth.decorators import user_passes_test
+from cartech_web.views import is_admin
 
 def home(request):
-    return render(request,'shop/home.html')
+    return render(request,'home.html')
 
 def selector(request):
-    return render(request,'shop/coches/selector.html')
+    return render(request,'coches/selector.html')
 
-@login_required
+@user_passes_test(is_admin)
+def crear_coche(request):
+    if request.method == 'POST':
+        form = CocheForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('list/all')  # Puedes definir esta vista
+    else:
+        form = CocheForm()
+
+    return render(request, 'coches/crear_coche.html', {'form': form})
+
+
 def listado_coches(request):
     con_stock = request.GET.get('con_stock', False)
     marca = request.GET.get('marca', '')
@@ -51,7 +65,7 @@ def listado_coches(request):
         'consumo': consumo,
     }
 
-    return render(request, 'shop/coches/listar_coches.html', context)
+    return render(request, 'coches/listar_coches.html', context)
 
 @login_required
 def listado_electricos(request):
@@ -88,7 +102,7 @@ def listado_electricos(request):
         'consumo': consumo,
     }
 
-    return render(request, 'shop/coches/listar_electricos.html', context)
+    return render(request, 'coches/listar_electricos.html', context)
 
 @login_required
 def listado_hibridos(request):
@@ -125,7 +139,7 @@ def listado_hibridos(request):
         'consumo': consumo,
     }
 
-    return render(request, 'shop/coches/listar_hibridos.html', context)
+    return render(request, 'coches/listar_hibridos.html', context)
 
 @login_required
 def listado_combustible(request):
@@ -166,7 +180,7 @@ def listado_combustible(request):
         'consumo': consumo,
     }
 
-    return render(request, 'shop/coches/listar_combustible.html', context)
+    return render(request, 'coches/listar_combustible.html', context)
 
 @login_required
 def detalles(request, id):
@@ -210,4 +224,4 @@ def detalles(request, id):
         'accesorios_seleccionados': accesorios_seleccionados,
         'precio_total': precio_total,
     }
-    return render(request, 'shop/coches/detail.html', context)
+    return render(request, 'coches/detail.html', context)

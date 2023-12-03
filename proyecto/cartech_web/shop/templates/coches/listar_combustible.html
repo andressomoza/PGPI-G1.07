@@ -1,4 +1,4 @@
-{% extends "shop/base/base.html" %}
+{% extends "base/base.html" %}
 {% load static %}
 {% block title %}
 {% if category %}{{ category.name }}{% else %}Coches{% endif %}
@@ -34,6 +34,15 @@
                             <input type="text" class="form-control" id="marca" name="marca" value="{{ marca }}">
                             <label for="modelo">Modelo</label>
                             <input type="text" class="form-control" id="modelo" name="modelo" value="{{ modelo }}">
+                            <label for="combustible">Tipo de Combustible</label>
+                            <select class="form-control" id="combustible" name="combustible">
+                                <option value="" {% if not combustible %}selected{% endif %}>Todos</option>
+                                <option value="gasolina" {% if combustible == 'gasolina' %}selected{% endif %}>Gasolina
+                                </option>
+                                <option value="diesel" {% if combustible == 'diesel' %}selected{% endif %}>Diesel</option>
+                                
+                            </select>
+
                             <label for="combustible">Tipo de Conducción</label>
                             <select class="form-control" id="conduccion" name="conduccion">
                                 <option value="" {% if not conduccion %}selected{% endif %}>Todos</option>
