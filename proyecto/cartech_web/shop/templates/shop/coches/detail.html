@@ -21,6 +21,11 @@
 
       <div class="col-md-6">
         <h2 class="text-black mr-2">{{ coche.marca }} {{ coche.modelo }}</h2>
+        {% if coche.stock > 0 %}
+          <p class="text-success">¡Disponible en stock!</p>
+        {% else %}
+          <p class="text-danger">¡Producto Agotado!</p>
+        {% endif %}
         {% if coche.imagen %}
         <img src="{{ coche.imagen.url }}" alt="{{ coche.marca }}" style="max-width: 100%;">
         {% else %}
@@ -31,7 +36,6 @@
         <p>Conduccion: {{ coche.conduccion }}</p>
         <p>Caballos: {{ coche.caballos }}</p>
         <p><strong class="text-primary h4">Precio Base: {{ coche.precio_inicial }}€</strong></p>
-
         {% if accesorios_seleccionados %}
         <h3>Accesorios:</h3>
         <ul>
@@ -55,7 +59,11 @@
             {{ alerta }}
             </div>
             {% endif %}
-            <button type="submit" class="btn btn-primary" name="comprar">Comprar</button>
+            {% if coche.stock > 0 %}
+                <button type="submit" class="btn btn-primary" name="comprar">Añadir a la cesta</button>
+            {% else %}
+                <button type="button" class="btn btn-secondary" disabled>Producto Agotado</button>
+            {% endif %}
           </div>
         </form>
       </div>
