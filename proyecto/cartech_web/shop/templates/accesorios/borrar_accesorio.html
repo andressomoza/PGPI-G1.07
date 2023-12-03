@@ -1,0 +1,16 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Confirmar Borrado</h2>
+  <p>¿Estás seguro de que quieres borrar el accesorio "{{ coche }}"?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sí, Borrar</button>
+    <a href="{{accesorio.get_absolute_url}}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

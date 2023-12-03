@@ -18,25 +18,7 @@
 <body>
 <div class="site-section">
     <div class="container">
-        <div class="row mb-5">
-            <div class="col-md-3 order-1 mb-5 mb-md-0">
-                <form method="get" id="filtrado">
-                    <h3 class="text-black mb-3">Filtrar</h3>
-                    <div class="form-group">
-            
-                        
-                        <label for="urgencia">Tipo de urgencia</label>
-                        <select class="form-control" id="urgencia" name="urgencia">
-                            <option value="baja" {% if urgencia == 'baja' %}selected{% endif %}>Baja</option>
-                            <option value="media" {% if urgencia == 'media' %}selected{% endif %}>Media</option>
-                            <option value="alta" {% if urgencia == 'alta' %}selected{% endif %}>Alta</option>
-                        </select>
-            
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-sm">Aplicar Filtro</button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters(event)">Resetear Filtros</button>
-                </form>
-            </div>
+        
             <div class="col-md-9 order-2">
                 <div class="row mb-5">
                     {% for incidencia in incidencias %}
@@ -57,11 +39,5 @@
         </div>
     </div>
 </div>
-<script>
-    function resetFilters(event) {
-        var url = "/";
-        window.location.href = url
-    }
-</script>
 </body>
 {% endblock %}

@@ -1,8 +1,7 @@
-{% extends "shop/base/base.html" %}
+{% extends "base/base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-{{ coche.name }}
 {% endblock %}
 {% block content %}
 <div class="bg-light py-3">
@@ -22,12 +21,21 @@
 
       <div class="col-md-6">
         <h2 class="text-black mr-2">{{ coche.marca }} {{ coche.modelo }}</h2>
+        {% if coche.stock > 0 %}
+          <p class="text-success">¡Disponible en stock!</p>
+        {% else %}
+          <p class="text-danger">¡Producto Agotado!</p>
+        {% endif %}
+        {% if coche.imagen %}
+        <img src="{{ coche.imagen.url }}" alt="{{ coche.marca }}" style="max-width: 100%;">
+        {% else %}
+        <p>No hay imagen disponible</p>
+        {% endif %}
         <p>Consumo: {{ coche.consumo }}</p>
         <p>Combustible: {{ coche.combustible }}</p>
         <p>Conduccion: {{ coche.conduccion }}</p>
         <p>Caballos: {{ coche.caballos }}</p>
         <p><strong class="text-primary h4">Precio Base: {{ coche.precio_inicial }}€</strong></p>
-
         {% if accesorios_seleccionados %}
         <h3>Accesorios:</h3>
         <ul>
@@ -46,10 +54,30 @@
             <input type="hidden" name="accesorios_comprar" value="{{ accesorio.id }}">
           {% endfor %}
           <div class="col-12">
-            <button type="submit" class="btn btn-primary" name="comprar">Comprar</button>
+            {% if alerta %}
+            <div class="alert alert-warning" role="alert">
+            {{ alerta }}
+            </div>
+            {% endif %}
+            {% if user.is_authenticated and user.is_staff %}
+              <a href="{% url "shop:editar_coche" coche.id %}"><button type="button" class="btn btn-primary" name="editar">Editar</button></a>
+              <a href="{% url "shop:borrar_coche" coche.id %}"><button type="button" class="btn btn-primary" name="editar">Eliminar</button></a>
+
+            {% else %}
+              {% if coche.stock > 0 %}
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" name="cantidad" id="cantidad" value="1" min="1" max="{{ coche.stock }}">
+                <br>
+                <button type="submit" class="btn btn-primary" name="comprar">Añadir a la cesta</button>
+              {% else %}
+                <button type="button" class="btn btn-secondary" disabled>Producto Agotado</button>
+              {% endif %}
+            {% endif %} 
           </div>
         </form>
       </div>
+      {% if user.is_authenticated and user.is_staff %}
+      {% else %}
       <div class="col-md-6">
         <h3>Accesorios Disponibles:</h3>
         <form id="accesorios-form" method="post" class="row">
@@ -58,6 +86,11 @@
           <div class="col-sm-6 col-lg-4 mb-4">
             <div class="block-4 text-center border">
               <div class="block-4-text p-4">
+                {% if accesorio.imagen %}
+                <img src="{{ accesorio.imagen.url }}" alt="{{ accesorio.nombre }}" style="max-width: 100%;">
+                {% else %}
+                <p>No hay imagen disponible</p>
+                {% endif %}
                 <p>{{ accesorio.nombre }} </p>
                 <p>{{ accesorio.precio }}€ </p>
                 <label class="d-block">
@@ -73,6 +106,7 @@
           </div>
         </form>
       </div>
+      {% endif %} 
     </div>
   </div>
 </div>
