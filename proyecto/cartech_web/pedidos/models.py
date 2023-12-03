@@ -1,6 +1,4 @@
 from django.db import models
-from django.urls import reverse
-from shop.models import Eleccion
 from django.contrib.auth.models import User
 import uuid
 
@@ -10,7 +8,6 @@ class Pedido(models.Model):
         CAMINO = 'camino', 'Camino'
         FABRICACION = 'fabricacion', 'Fabricacion'
 
-    eleccion = models.ForeignKey(Eleccion, related_name='pedido', on_delete=models.CASCADE)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=11, choices=Status.choices, default=Status.FABRICACION)
     id_pedido = models.CharField(max_length=36, unique=True, editable=False)

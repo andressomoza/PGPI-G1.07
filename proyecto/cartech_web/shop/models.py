@@ -2,6 +2,9 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+from pedidos.models import Pedido
+
+
 class Accesorio(models.Model):
     
     precio = models.IntegerField()
@@ -42,6 +45,8 @@ class Eleccion(models.Model):
     coche = models.ForeignKey(Coche, related_name='elecciones', on_delete=models.CASCADE)
     accesorios = models.ManyToManyField(Accesorio, related_name='elecciones',blank=True)
     cantidad = models.IntegerField(default=1)
+    pedido = models.ForeignKey(Pedido, related_name='elecciones', on_delete=models.CASCADE,blank=True)
+    
     
     def get_precio_total(self):
         precio_base = self.coche.precio_inicial
