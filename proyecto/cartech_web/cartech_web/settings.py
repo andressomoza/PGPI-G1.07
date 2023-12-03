@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'shop.apps.ShopConfig',
     'incidencias.apps.IncidenciasConfig',
     'pedidos.apps.PedidosConfig',
-    'carrito.apps.CarritoConfig'
+    'carrito.apps.CarritoConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -124,6 +125,11 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# settings.py
+
+STRIPE_PUBLIC_KEY = 'pk_test_51OJBJcLdnlgk3Y2dpJzpzaN9fOTPdIsDcj2Yivp62YrdNGS4qx5kGyWyfCERA1SlDUwjKVhwacTUDvmt8iliYOXn008x30lhKK'
+STRIPE_SECRET_KEY = 'sk_test_51OJBJcLdnlgk3Y2d9IrdBowToBzxmDRdI2NgP2rTC9tBhTcW2Gebhqllorvp5g1Ru1aSG9Uw1R8k2NN8blJneUyR00Z3eVQBGi'
 
 
 # Static files (CSS, JavaScript, Images)
