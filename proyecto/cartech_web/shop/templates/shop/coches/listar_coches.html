@@ -75,6 +75,9 @@
                                     <h3><a href="{{ coche.get_absolute_url }}">{{coche.marca}} {{ coche.modelo }}</a></h3>
                                     <p class="mb-0">Consumo: {{ coche.consumo }}</p>
                                     <p class="text-primary font-weight-bold">Precio base: {{ coche.precio_inicial }}€</p>
+                                    {% if coche.stock == 0 %}
+                                        <p class="text-danger">¡Producto Agotado!</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

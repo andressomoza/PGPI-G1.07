@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Accesorio(models.Model):
     
     precio = models.IntegerField()
+    stock = models.IntegerField()
     nombre = models.CharField(max_length=50)
     imagen = models.ImageField(upload_to='accesorios/', default='accesorios/default.jpg')
     
@@ -26,6 +27,7 @@ class Coche(models.Model):
     combustible = models.CharField(max_length=20, choices=Combustible.choices, default=Combustible.GASOLINA)
     conduccion = models.CharField(max_length=20, choices=Conduccion.choices, default=Conduccion.MANUAL)
     consumo = models.FloatField()
+    stock = models.IntegerField()
     caballos = models.IntegerField()
     precio_inicial = models.IntegerField()
     imagen = models.ImageField(upload_to='coches/', default='coches/default.jpg')
