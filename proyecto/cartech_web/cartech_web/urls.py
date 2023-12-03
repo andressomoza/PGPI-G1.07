@@ -30,6 +30,9 @@ urlpatterns = [
     path('salir/', views.salir, name='salir'),
     path('signup/', views.signup, name='signup'),
     path('carrito/', include('carrito.urls', namespace='carrito')),
+    #path('api-auth/', include('rest_framework.urls')),  # Include DRF's authentication URLs
+
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

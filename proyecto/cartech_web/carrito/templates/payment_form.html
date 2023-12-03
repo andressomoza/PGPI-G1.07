@@ -1,0 +1,6 @@
+<!-- payment_form.html -->
+<form method="post" action="{% url 'carrito:make_payment' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Pay</button>
+</form>
