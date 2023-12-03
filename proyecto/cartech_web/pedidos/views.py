@@ -29,6 +29,15 @@ def listar_pedidos(request):
 
     return render(request, 'listar_pedidos.html', context)
 
+def mis_pedidos(request):
+    pedidos = Pedido.objects.filter(usuario = request.user)
+
+    context = {
+        'pedidos': pedidos,
+    }
+
+    return render(request, 'mis_pedidos.html', context)
+
 def detalle_pedido(request, id):
     pedido = get_object_or_404(Pedido, id=id)
     coche = pedido.eleccion.coche

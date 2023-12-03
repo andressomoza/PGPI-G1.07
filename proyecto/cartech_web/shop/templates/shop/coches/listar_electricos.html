@@ -25,6 +25,14 @@
                         <h3 class="text-black mb-3">Filtrar</h3>
                         <div class="form-group">
 
+                            <label for="combustible">Tipo de Conducción</label>
+                            <select class="form-control" id="conduccion" name="conduccion">
+                                <option value="" {% if not conduccion %}selected{% endif %}>Todos</option>
+                                <option value="manual" {% if conduccion == 'manual' %}selected{% endif %}>Manual</option>
+                                <option value="automatico" {% if conduccion == 'automatico' %}selected{% endif %}>
+                                    Automático</option>
+                            </select>
+
                             <label for="precio_maximo">Precio Máximo</label>
                             <input type="number" class="form-control" id="precio_maximo" name="precio_maximo"
                                 value="{{ precio_maximo }}">

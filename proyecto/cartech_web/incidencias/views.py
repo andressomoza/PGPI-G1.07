@@ -31,3 +31,15 @@ def listar_incidencias(request):
     }
 
     return render(request, 'listar_incidencias.html', context)
+
+
+def mis_incidencias(request):
+    
+    incidencias = Incidencia.objects.filter(usuario = request.user)
+
+    context = {
+        'incidencias': incidencias,
+
+    }
+
+    return render(request, 'mis_incidencias.html', context)

@@ -118,7 +118,7 @@ def listado_combustible(request):
         'consumo': consumo,
     }
 
-    return render(request, 'shop/coches/listar_electricos.html', context)
+    return render(request, 'shop/coches/listar_combustible.html', context)
 
 @login_required
 def detalles(request, id):
