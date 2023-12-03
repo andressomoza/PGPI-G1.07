@@ -1,70 +1,71 @@
 from django.shortcuts import render, get_object_or_404
-#from cart.forms import CartAddProductForm
-from .models import Category, Product, Coche
-
-# from django.views import generic
-
-# class IndexView(generic.ListView):
-#     template_name = 'shop/index.html'
-#     context_object_name = 'products'
-
-#     def get_queryset(self):
-#         '''Return five lattest products
-#         '''
-#         return Product.objects.filter(created__lte=timezone.now()
-#         ).order_by('-created')[:5]
+from .models import  Coche, Accesorio, Eleccion
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 
 
+def home(request):
+    return render(request,'shop/home.html')
 
-def product_list(request, category_slug=None):
-    category = None
-    categories = Category.objects.all()
-    products = Product.objects.filter(available=True)
-    if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
-        products = products.filter(category=category)
-    context = {'category': category, 'categories': categories, 'products': products}
-    return render(request, 'shop/product/list.html', context)
-
+@login_required
 def cars_list(request):
+    combustible = request.GET.get('combustible', '')
+    precio_maximo = request.GET.get('precio_maximo', '')
+    tipo_conduccion = request.GET.get('conduccion', '')
+    consumo = request.GET.get('consumo', '')
+    caballos = request.GET.get('caballos', '')
     cars = Coche.objects.all()
-    
-    context = {'products': cars}
-    return render(request, 'shop/product/list.html', context)
+    if combustible:
+        cars = cars.filter(combustible=combustible)
+    if precio_maximo:
+        cars = cars.filter(precio_inicial__lte=precio_maximo)
+    if tipo_conduccion:
+        cars = cars.filter(conduccion=tipo_conduccion)
+    if consumo:
+        cars = cars.filter(consumo__lte = consumo)
+    if caballos:
+        cars = cars.filter(caballos__lte =caballos)
+    context = {
+        'cars': cars,
+        'combustible': combustible,
+        'precio_maximo': precio_maximo,
+        'conduccion': tipo_conduccion,
+        'caballos': caballos,
+        'consumo': consumo,
+    }
 
-# class ProductListView(generic.ListView):
-#     template_name = 'shop/product/list.html'
+    return render(request, 'shop/cars/listar_coches.html', context)
 
-#     def get_queryset(self):
-#         return Product.objects.filter(available=True)
+@login_required
+def car_detail(request, id):
+    car = get_object_or_404(Coche, id=id)
+    accesorios_disponibles = Accesorio.objects.all()
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         category = None
-#         if category_slug:
-#             category = get_object_or_404(Category, slug=category_slug)
-#         context['category'] = category
-#         context['categories'] = Category.objects.all()
+    if request.method == 'POST':
+        
+        if 'confirmar_eleccion' in request.POST:
+            accesorios_seleccionados_ids = request.POST.getlist('accesorios_seleccionados', [])
+            accesorios_seleccionados = Accesorio.objects.filter(id__in=accesorios_seleccionados_ids)
 
+        elif 'comprar' in request.POST:
+            accesorios_comprar_ids = request.POST.getlist('accesorios_comprar', [])
+            accesorios_comprar = Accesorio.objects.filter(id__in=accesorios_comprar_ids)
+            eleccion = Eleccion(coche=car, usuario = request.user)
+            eleccion.save()
+            eleccion.accesorios.set(accesorios_comprar)
+            print('accesorios', eleccion.coche)
+            print('accesorios', eleccion.accesorios.all())
+            return HttpResponseRedirect('/')
 
+    else:
+        accesorios_seleccionados = []
 
-
-
-def product_detail(request, id, slug):
-    product = get_object_or_404(Product, id=id, slug=slug, available=True)
-    #cart_product_form = CartAddProductForm()
-    context = {'product': product, 'cart_product_form': product}
-    return render(request, 'shop/product/detail.html', context)
-
-
-# class ProductDetialView(generic.DetailView):
-
-#     template_name = 'shop/product/detail.html'
-#     model = Product
-#     form_class = CartAddProductForm
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['products'] = get_object_or_404(Product, 
-#         id=id, slug=slug, available=True)
-#         return context
+    precio_total = car.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
+    context = {
+        'car': car,
+        'accesorios_disponibles': accesorios_disponibles,
+        'accesorios_seleccionados': accesorios_seleccionados,
+        'precio_total': precio_total,
+    }
+    return render(request, 'shop/cars/detail.html', context)

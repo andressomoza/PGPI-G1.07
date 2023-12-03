@@ -1,0 +1,65 @@
+{% extends "shop/base/base.html" %}
+{% load static %}
+{% block title %}
+{% endblock %}
+{% block content %}
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            {% with base_url="/pedidos/" %}
+            <div class="col-md-12 mb-0"><a href="{{ base_url }}">Pedidos</a> <span class="mx-2 mb-0">/</span> <strong
+                    class="text-black">Mis pedidos</strong></div>
+            {% endwith %}
+
+        </div>
+    </div>
+</div>
+<body>
+<div class="site-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                <form method="get" id="filtrado">
+                    <h3 class="text-black mb-3">Filtrar</h3>
+                    <div class="form-group">
+            
+                        <label for="status">Estado</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="entregado" {% if status == 'entregado' %}selected{% endif %}>Entregado</option>
+                            <option value="camino" {% if status == 'camino' %}selected{% endif %}>Camino</option>
+                            <option value="fabricacion" {% if status == 'fabricacion' %}selected{% endif %}>Fabricacion</option>
+                        </select>
+            
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Aplicar Filtro</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters(event)">Resetear Filtros</button>
+                </form>
+            </div>
+            <div class="col-md-9 order-2">
+                <div class="row mb-5">
+                    {% for pedido in pedidos %}
+                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                        <div class="block-4 text-center border">
+                            <div class="block-4-text p-4">
+                                <p class="mb-0"><a href="{{pedido.id}}" %}">Coche: {{ pedido.eleccion.coche.marca }} {{ pedido.eleccion.coche.modelo }}</a></p>
+                                <p class="mb-0">Estado: {{ pedido.status }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                
+            </div>
+            
+        </div>
+    </div>
+</div>
+<script>
+    function resetFilters(event) {
+        var url = "/";
+        window.location.href = url
+    }
+</script>
+</body>
+{% endblock %}

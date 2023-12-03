@@ -1,0 +1,67 @@
+{% extends "shop/base/base.html" %}
+{% load static %}
+{% block title %}
+{% if category %}{{ category.name }}{% else %}Incidencias{% endif %}
+{% endblock %}
+{% block content %}
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            {% with base_url="/incidencias/" %}
+            <div class="col-md-12 mb-0"><a href="{{ base_url }}">Incidencias</a> <span class="mx-2 mb-0">/</span> <strong
+                    class="text-black">Mis incidencias</strong></div>
+            {% endwith %}
+
+        </div>
+    </div>
+</div>
+<body>
+<div class="site-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                <form method="get" id="filtrado">
+                    <h3 class="text-black mb-3">Filtrar</h3>
+                    <div class="form-group">
+            
+                        
+                        <label for="urgencia">Tipo de urgencia</label>
+                        <select class="form-control" id="urgencia" name="urgencia">
+                            <option value="baja" {% if urgencia == 'baja' %}selected{% endif %}>Baja</option>
+                            <option value="media" {% if urgencia == 'media' %}selected{% endif %}>Media</option>
+                            <option value="alta" {% if urgencia == 'alta' %}selected{% endif %}>Alta</option>
+                        </select>
+            
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Aplicar Filtro</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters(event)">Resetear Filtros</button>
+                </form>
+            </div>
+            <div class="col-md-9 order-2">
+                <div class="row mb-5">
+                    {% for incidencia in incidencias %}
+                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                        <div class="block-4 text-center border">
+                            <div class="block-4-text p-4">
+                                <p class="mb-0">Incidencia: {{ incidencia.descripcion }}</p>
+                                <p class="text-primary font-weight-bold">Urgencia: {{ incidencia.urgencia }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                
+            </div>
+            
+        </div>
+    </div>
+</div>
+<script>
+    function resetFilters(event) {
+        var url = "/";
+        window.location.href = url
+    }
+</script>
+</body>
+{% endblock %}

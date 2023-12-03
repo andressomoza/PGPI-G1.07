@@ -1,0 +1,14 @@
+
+{% extends "shop/base/base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h2>Gestión de Incidencias</h2>
+
+    <!-- Botón para crear nueva incidencia -->
+    <a href="{% url "incidencias:crear_incidencia" %}" class="btn btn-primary">Crear Nueva Incidencia</a>
+
+    <!-- Botón para listar incidencias -->
+    <a href="{% url "incidencias:listar_incidencias" %}" class="btn btn-success">Listar Incidencias</a>
+  </div>
+{% endblock %}

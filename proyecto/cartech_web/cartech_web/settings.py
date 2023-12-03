@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     'crispy_forms',
 
     'shop.apps.ShopConfig',
-    'coche',
+    'incidencias.apps.IncidenciasConfig',
+    'pedidos.apps.PedidosConfig',
+    'carrito.apps.CarritoConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -55,12 +58,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+LOGIN_REDIRECT_URL = '/'
+
 ROOT_URLCONF = 'cartech_web.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,12 +73,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'shop.context_processors.carrito',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'cartech_web.wsgi.application'
+
+
 
 
 # Database
@@ -106,6 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -117,11 +126,16 @@ USE_I18N = True
 
 USE_TZ = True
 
+# settings.py
+
+STRIPE_PUBLIC_KEY = 'pk_test_51OJBJcLdnlgk3Y2dpJzpzaN9fOTPdIsDcj2Yivp62YrdNGS4qx5kGyWyfCERA1SlDUwjKVhwacTUDvmt8iliYOXn008x30lhKK'
+STRIPE_SECRET_KEY = 'sk_test_51OJBJcLdnlgk3Y2d9IrdBowToBzxmDRdI2NgP2rTC9tBhTcW2Gebhqllorvp5g1Ru1aSG9Uw1R8k2NN8blJneUyR00Z3eVQBGi'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

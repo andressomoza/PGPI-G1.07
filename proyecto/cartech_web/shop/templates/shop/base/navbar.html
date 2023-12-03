@@ -19,13 +19,18 @@
                 <div class="col-6 col-md-4 order-3 order-md-3 text-right">
                     <div class="site-top-icons">
                         <ul>
-                            <li><a href="#"><span class="icon icon-person"></span></a></li>
-                            <li>
-                                
+                            {% if user.is_authenticated %}
+                                <li><a href="salir/"><span class="icon icon-person"></span> Cerrar Sesión</a></li>
+                            {% else %}
+                                <li><a href="{% url 'login' %}"><span class="icon icon-person"></span> Iniciar Sesión</a></li>
+                            {% endif %}
+                            <li class="d-inline-block d-md-none ml-md-0">
+                                <a href="#" class="site-menu-toggle js-menu-toggle">
+                                    <span class="icon-menu"></span>
+                                </a>
                             </li>
-                            <li class="d-inline-block d-md-none ml-md-0"><a href="#"
-                                    class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a></li>
                         </ul>
+                        
                     </div>
                 </div>
 
@@ -35,8 +40,10 @@
     <nav class="site-navigation text-right text-md-center" role="navigation">
         <div class="container">
             <ul class="site-menu js-clone-nav d-none d-md-block">
-                <li><a href="#">Home</a></li>
-                <li><a href="{% url "shop:cars_list" %}">Shop</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="{% url "shop:cars_list" %}">Configurador coches</a></li>
+                <li><a href="/incidencias/">Incidencias</a></li>
+                <li><a href="/pedidos/">Mis pedidos</a></li>
                 <li><a href="shop.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
