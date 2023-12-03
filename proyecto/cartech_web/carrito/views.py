@@ -21,13 +21,38 @@ def home(request):
 def listar_carrito(request):
     usuario = request.user.id
     elecciones = Eleccion.objects.all()
-    elecciones = elecciones.filter(usuario_id=usuario)
-
-    for eleccion in elecciones:
-        print(eleccion.)
+    elecciones = elecciones.filter(usuario_id=usuario)   
 
     return render(request, 'listar_carrito.html', {'elecciones': elecciones})
 
+def add(request, eleccion_id):
+    eleccion = get_object_or_404(Eleccion, id=eleccion_id)
+
+    print(eleccion)
+    eleccion.cantidad += 1
+    eleccion.save()
+
+    usuario = request.user.id
+    elecciones = Eleccion.objects.all()
+    elecciones = elecciones.filter(usuario_id=usuario)
+
+    return render(request, 'listar_carrito.html', {'elecciones': elecciones})
+
+def delete(request, eleccion_id):
+    eleccion = get_object_or_404(Eleccion, id=eleccion_id)
+
+    print(eleccion)
+    eleccion.cantidad -= 1
+    if eleccion.cantidad <= 0:
+        eleccion.delete()
+    else: 
+        eleccion.save()
+
+    usuario = request.user.id
+    elecciones = Eleccion.objects.all()
+    elecciones = elecciones.filter(usuario_id=usuario)
+    
+    return render(request, 'listar_carrito.html', {'elecciones': elecciones})
 
 class PaymentView(View):
     template_name = 'payment_form.html'

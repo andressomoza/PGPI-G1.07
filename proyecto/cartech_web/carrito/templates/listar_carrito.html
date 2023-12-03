@@ -6,32 +6,37 @@
 <body>
 <div class="site-section">
     <div class="container">
-        <div class="row mb-5">
+        <div class="row mb-5 justify-content-center">
             <div class="col-md-9 order-2">
+                <h2 class="text-center mb-4">Carrito</h2>
                 <div class="row mb-5">
                     {% for eleccion in elecciones %}
-                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                    <div class="col-12 mb-4" data-aos="fade-up">
                         <div class="block-4 text-center border">
                             <div class="block-4-text p-4">
-                                <p class="mb-0"><a href="{{pedido.id}}" %}">Coche: {{ eleccion.coche.marca }} {{ pedido.eleccion.coche.modelo }}</a></p>
-                                <p class="mb-0">Estado: {{ pedido.status }}</p>
+                                <p class="mb-0"><a href="{{ pedido.id }}">Coche: {{ eleccion.coche.marca }} {{ eleccion.coche.modelo }}</a></p>
+                                <p class="mb-0">Combustible: {{ eleccion.coche.combustible }}</p>
+                                <p class="mb-0">Conducción: {{ eleccion.coche.conduccion }}</p>
+                                <p class="mb-0">Accesorios:</p>
+                                <ul style="list-style: none; padding: 0;">
+                                    {% for accesorio in eleccion.accesorios.all %}
+                                    <li>{{ accesorio.nombre }} - Precio: {{ accesorio.precio }} €</li>
+                                    {% endfor %}
+                                </ul>
+                                <p class="mb-0" style="font-size: 1.2em;">Precio Total del Coche: {{ eleccion.get_precio_total }} €</p>
+                            </div>
+                            <div class="block-4-buttons p-4">
+                                <p class="mb-0">Cantidad: {{ eleccion.cantidad }}</p>
+                                <a href="{% url 'carrito:add' eleccion.id %}" class="btn btn-success">Añadir</a>
+                                <a href="{% url 'carrito:delete' eleccion.id %}" class="btn btn-danger">Quitar</a>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
-                
-                
             </div>
-            
         </div>
     </div>
 </div>
-<script>
-    function resetFilters(event) {
-        var url = "/";
-        window.location.href = url
-    }
-</script>
 </body>
 {% endblock %}
