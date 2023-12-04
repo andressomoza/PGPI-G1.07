@@ -6,9 +6,9 @@
 <div class="bg-light py-3">
     <div class="container">
         <div class="row">
-            {% with base_url="/opiniones/" %}
-            <div class="col-md-12 mb-0"><a href="{{ base_url }}">Incidencias</a> <span class="mx-2 mb-0">/</span> <strong
-                    class="text-black">Nueva incidencia</strong></div>
+            {% with base_url="/" %}
+            <div class="col-md-12 mb-0"><a href="{{ base_url }}">Opiniones</a> <span class="mx-2 mb-0">/</span> <strong
+                    class="text-black">Nueva opinion</strong></div>
             {% endwith %}
 
         </div>
@@ -20,7 +20,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Crear Incidencia</h5>
+                    <h5 class="card-title">Crear Opinion</h5>
                         <br/>
                         <form method="post" action="{% url 'opiniones:crear_opinion' %}" class="needs-validation" novalidate>
                             {% csrf_token %}
