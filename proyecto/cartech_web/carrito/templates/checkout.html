@@ -9,20 +9,21 @@ Checkout
     <div class="order-info">
         <h3 class="text-center">Your order</h3>
         <ul>
-            <li>HPOLS</li>
             {% for eleccion in elecciones %}
             <li>
+                <img src="{{ eleccion.coche.imagen.url }}" alt="{{ eleccion.coche.modelo }}" width="100" height="100">
                 {{ eleccion.cantidad }}x {{ eleccion.coche.modelo }}
-                <span>${{ item.total_price }}</span>
+                <span>${{ eleccion.get_precio_total }}</span>
             </li>
             {% endfor %}
         </ul>
         <h4>Total: ${{ cart.get_total_price }}</h4>
     </div>
-    <form action="." method="post" class="order-form">
+    <form method="post" class="order-form">
+    
         {{ form|crispy }}
+        <p>Hola</p>
         <p><input class="btn btn-primary btn-sm btn-block" type="submit" value="Place order"></p>
-        {% csrf_token %}
     </form>
 </div>
 {% endblock %}

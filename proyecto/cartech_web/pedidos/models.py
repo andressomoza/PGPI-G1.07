@@ -9,6 +9,13 @@ class Pedido(models.Model):
         FABRICACION = 'fabricacion', 'Fabricacion'
 
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    nombre = models.CharField(max_length=255, null=True)
+    apellidos = models.CharField(max_length=255, null=True)
+    email = models.CharField(max_length=255, null=True)
+    direccion = models.CharField(max_length=255, null=True)
+    ciudad = models.CharField(max_length=100, null=True)
+    codigo_postal = models.CharField(max_length=10, null=True)
     status = models.CharField(max_length=11, choices=Status.choices, default=Status.FABRICACION)
     id_pedido = models.CharField(max_length=36, unique=True, editable=False)
 

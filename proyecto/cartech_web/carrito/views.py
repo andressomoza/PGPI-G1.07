@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from shop.models import Eleccion, Coche, Accesorio
+from shop.models import Eleccion, Coche, Accesorio, DireccionUsuario
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -8,7 +8,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import CardInformationSerializer  # Make sure to import the serializer
 from django.views import View
-from .forms import PaymentForm
+from .forms import PaymentForm, PedidoForm, DatosClienteForm, DatosEnvioForm
+from pedidos.models import Pedido
+from django.contrib.auth.models import User
 
 import stripe
 
@@ -21,9 +23,13 @@ def home(request):
 def listar_carrito(request):
     usuario = request.user.id
     elecciones = Eleccion.objects.all()
-    elecciones = elecciones.filter(usuario_id=usuario)   
+    elecciones = elecciones.filter(usuario_id=usuario)
+    precio_total = 0 
+    for eleccion in elecciones:
+        precio_total += eleccion.get_precio_total()
 
-    return render(request, 'listar_carrito.html', {'elecciones': elecciones})
+
+    return render(request, 'listar_carrito.html', {'elecciones': elecciones, 'precio_total': precio_total})
 
 def add(request, eleccion_id):
     eleccion = get_object_or_404(Eleccion, id=eleccion_id)
@@ -54,12 +60,44 @@ def delete(request, eleccion_id):
     
     return render(request, 'listar_carrito.html', {'elecciones': elecciones})
 
-def checkout(request):
-    usuario = request.user.id
-    elecciones = Eleccion.objects.all()
-    elecciones = elecciones.filter(usuario_id=usuario)   
 
-    return render(request, 'checkout.html', { 'elecciones': elecciones })
+def checkout(request):
+    usuario = request.user
+    todos = User.objects.all()
+    print(todos)
+    elecciones = Eleccion.objects.filter(usuario=usuario)
+    direccion, created = DireccionUsuario.objects.get_or_create(usuario=usuario)
+    detalles_usuario = User.objects.get(username=usuario)
+    pedido = Pedido.objects.create(usuario=usuario)
+    print(detalles_usuario)
+    
+    if request.method == 'POST':
+        form = PedidoForm(request.user, request.POST)
+        if form.is_valid():
+            # Procesar el formulario y guardar los cambios en la dirección
+            pedido.nombre = form.cleaned_data['nombre']
+            pedido.apellidos = form.cleaned_data['apellidos']
+            pedido.email = form.cleaned_data['email']
+            pedido.direccion = form.cleaned_data['direccion']
+            pedido.ciudad = form.cleaned_data['ciudad']
+            pedido.codigo_postal = form.cleaned_data['codigo_postal']
+            pedido.save()
+
+            return redirect('página de confirmación')
+    else:
+        
+        # Si es una solicitud GET, inicializa el formulario con los datos de la dirección
+        form = PedidoForm(initial={
+            'nombre': request.user.first_name,
+            'apellidos': detalles_usuario.last_name,
+            'email': detalles_usuario.email,
+            #'direccion': detalles_usuario.direccion,
+            #'ciudad': detalles_usuario.ciudad,
+            #'codigo_postal': detalles_usuario.codigo_postal,
+        })
+        
+    return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form})
+
 
 class PaymentView(View):
     template_name = 'payment_form.html'
