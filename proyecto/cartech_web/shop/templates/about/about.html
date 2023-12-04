@@ -1,0 +1,55 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %} 
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-10 mx-auto text-center">
+        <p class="lead mb-5">No dudes en contactarnos para más información. 
+            Estamos aquí para ayudarte a hacer realidad tu sueño de tener el coche perfecto.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10 mx-auto">
+        <div class="card-deck">
+          <!-- Card 1 -->
+          <div class="card mb-4">
+            <img src="../../media/imagenes/about1.jpeg" class="card-img-top" alt="Imagen 1" style="max-height: 300px; width: auto;">
+            <div class="card-body">
+              <p class="card-text lead">CartechWeb comenzó su historia con la visión de transformar la experiencia de compra de coches. 
+                Desde nuestros inicios, hemos evolucionado como pioneros en ofrecer una amplia gama de opciones personalizadas, 
+                marcando el camino hacia la conducción del futuro. Nuestra dedicación a la innovación y la excelencia ha definido 
+                nuestra trayectoria a lo largo del tiempo.</p>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card mb-4">
+            <img src="../../media/imagenes/about2.jpeg" class="card-img-top" alt="Imagen 2" style="max-height: 300px; width: auto;">
+            <div class="card-body">
+              <p class="card-text lead">Nuestro equipo altamente capacitado está comprometido a brindar un servicio personalizado, 
+                asegurando que cada cliente se sienta atendido y comprendido, proporcionando una experiencia de compra relajada. 
+                Además, nuestra plataforma en línea intuitiva garantiza una navegación sencilla y facilidad de uso para configurar el coche ideal 
+                desde la comodidad de tu hogar.</p>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="card mb-4">
+            <img src="../../media/imagenes/about3.jpeg" class="card-img-top" alt="Imagen 3" style="max-height: 210px; width: auto;">
+            <div class="card-body">
+              <p class="card-text lead">La empresa ha forjado una sólida reputación como líder en la industria automotriz, reconocida por proporcionar opciones de calidad
+                y un servicio excepcional. Nuestra firma se destaca por la satisfacción del cliente y la dedicación a ofrecer experiencias de 
+                conducción únicas y personalizadas. </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock %}
