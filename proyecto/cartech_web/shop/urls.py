@@ -16,11 +16,12 @@ urlpatterns = [
     path('coches/list/electricos', views.listado_electricos, name='listado_electricos'),
     path('coches/list/hibridos', views.listado_hibridos, name='listado_hibridos'),
     path('coches/<int:id>/', views.detalles_coche, name='detalles_coche'),
-    
     path('accesorios/new', views.crear_accesorio, name='crear_accesorio'),
     path('accesorios/<int:id>/', views.detalles_accesorio, name='detalles_accesorio'),
     path('accesorios/delete/<int:id>', views.borrar_accesorio, name='borrar_accesorio'),
     path('accesorios/edit/<int:id>', views.editar_accesorio, name='editar_accesorio'),
     path('accesorios/list', views.listado_accesorios, name='listado_accesorios'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
 
 ]

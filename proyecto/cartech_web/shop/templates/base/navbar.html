@@ -74,7 +74,7 @@
                     <li><a href="/incidencias/">Incidencias</a></li>
                     <li><a href="{% url "pedidos:mis_pedidos" %}">Mis pedidos</a></li>
                     <li><a href="{% url "opiniones:crear_opinion" %}">Opiniones</a></li>
-                    <li><a href="shop.html">About</a></li>
+                    <li><a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
             </div>
@@ -89,8 +89,8 @@
                 <li><a href="/incidencias/">Incidencias</a></li>
                 <li><a href="{% url "pedidos:mis_pedidos" %}">Mis pedidos</a></li>
                 <li><a href="{% url "pedidos:buscar_pedido" %}">Pedidos</a></li>
-                <li><a href="shop.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="{% url "shop:about" %}">About</a></li>
+                <li><a href="{% url "shop:contact" %}">Contact</a></li>
             </ul>
         </div>
     </nav>
