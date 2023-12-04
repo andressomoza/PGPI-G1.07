@@ -29,6 +29,20 @@
                                     <span class="icon-menu"></span>
                                 </a>
                             </li>
+                            <li>
+                                <a href="{% url "carrito:listar_carrito" %}" class="site-cart">
+                                    <span class="icon icon-shopping_cart"></span>
+                                        <span class="count">
+                                        {% with total_items=elecciones|length %}
+                                            {% if elecciones|length > 0 %}
+                                                {{ total_items }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        {% endwith %}
+                                        </span>
+                                </a>
+                            </li>
                         </ul>
                         
                     </div>
