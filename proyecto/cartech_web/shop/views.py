@@ -142,6 +142,11 @@ def listado_coches(request):
         coches = coches.filter(consumo__lte = consumo)
     if caballos:
         coches = coches.filter(caballos__lte =caballos)
+
+    usuario = request.user.id
+    elecciones = Eleccion.objects.all()
+    elecciones = elecciones.filter(usuario_id=usuario).values()
+        
     context = {
         'coches': coches,
         'marca': marca,
@@ -152,6 +157,7 @@ def listado_coches(request):
         'conduccion': tipo_conduccion,
         'caballos': caballos,
         'consumo': consumo,
+        'elecciones': elecciones
     }
 
     return render(request, 'coches/listar_coches.html', context)
