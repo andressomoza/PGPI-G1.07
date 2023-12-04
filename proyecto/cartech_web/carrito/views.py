@@ -103,7 +103,6 @@ def checkout(request):
         
     return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form, 'precio_total': precio_total })
 
-
 class PaymentView(View):
     template_name = 'payment_form.html'
 
@@ -121,16 +120,21 @@ class PaymentView(View):
                 'cvc': form.cleaned_data['cvc'],
             }
 
-            response = self.stripe_card_payment(data_dict=api_data)
+            # Obtener información del usuario y elecciones
+            usuario = request.user.id
+            elecciones = Eleccion.objects.filter(usuario_id=usuario)
+            precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
+            response = self.stripe_card_payment(data_dict=api_data, usuario=usuario, elecciones=elecciones, precio_total=precio_total)
 
             if response.get('status') == status.HTTP_200_OK:
-               return redirect('carrito:listar_carrito')
+                return redirect('carrito:listar_carrito')
             else:
                 return redirect('carrito:listar_carrito')
         else:
             return render(request, self.template_name, {'form': form})
 
-    def stripe_card_payment(self, data_dict):
+    def stripe_card_payment(self, data_dict, usuario, elecciones, precio_total):
         try:
             card_details = {
                 "type": "card",
@@ -141,45 +145,32 @@ class PaymentView(View):
                     "cvc": data_dict['cvc'],
                 },
             }
-            # You can also get the amount from the database by creating a model
-            payment_intent = stripe.PaymentIntent.create(
-                amount=1000,
-                currency='eur',
-            )
-            payment_intent_modified = stripe.PaymentIntent.modify(
-                payment_intent['id'],
-                payment_method=card_details['id'],
-            )
-            try:
-                payment_confirm = stripe.PaymentIntent.confirm(payment_intent['id'])
-                payment_intent_modified = stripe.PaymentIntent.retrieve(payment_intent['id'])
-            except:
-                payment_intent_modified = stripe.PaymentIntent.retrieve(payment_intent['id'])
-                payment_confirm = {
-                    "stripe_payment_error": "Failed",
-                    "code": payment_intent_modified['last_payment_error']['code'],
-                    "message": payment_intent_modified['last_payment_error']['message'],
-                    'status': "Failed"
-                }
-            if payment_intent_modified and payment_intent_modified['status'] == 'succeeded':
-                response = {
-                    'message': "Card Payment Success",
-                    'status': status.HTTP_200_OK,
-                    "card_details": card_details,
-                    "payment_intent": payment_intent_modified,
-                    "payment_confirm": payment_confirm
-                }
-            else:
-                response = {
-                    'message': "Card Payment Failed",
-                    'status': status.HTTP_400_BAD_REQUEST,
-                    "card_details": card_details,
-                    "payment_intent": payment_intent_modified,
-                    "payment_confirm": payment_confirm
-                }
-        except:
+
+            # Puedes usar 'usuario', 'elecciones', y 'precio_total' aquí según sea necesario
+            print(f"Usuario: {usuario}")
+            print(f"Elecciones: {elecciones}")
+            print(f"Precio total: {precio_total}")
+
+            # Resto de tu código de stripe_card_payment...
+            # Recuerda ajustar esta parte según las necesidades específicas de tu aplicación.
+
+        except stripe.error.CardError as e:
             response = {
-                'error': "Your card number is incorrect",
+                'error': f"Card error: {e.error.message}",
+                'status': status.HTTP_400_BAD_REQUEST,
+                "payment_intent": {"id": "Null"},
+                "payment_confirm": {'status': "Failed"}
+            }
+        except stripe.error.StripeError as e:
+            response = {
+                'error': f"Stripe error: {e.error.message}",
+                'status': status.HTTP_400_BAD_REQUEST,
+                "payment_intent": {"id": "Null"},
+                "payment_confirm": {'status': "Failed"}
+            }
+        except Exception as e:
+            response = {
+                'error': f"An unexpected error occurred: {str(e)}",
                 'status': status.HTTP_400_BAD_REQUEST,
                 "payment_intent": {"id": "Null"},
                 "payment_confirm": {'status': "Failed"}
