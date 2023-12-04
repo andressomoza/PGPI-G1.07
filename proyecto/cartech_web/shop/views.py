@@ -92,7 +92,7 @@ def crear_coche(request):
         form = CocheForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('list/all')  # Puedes definir esta vista
+            return HttpResponseRedirect('/coches/list') 
     else:
         form = CocheForm()
 
