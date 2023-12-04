@@ -12,7 +12,7 @@ class PaymentForm(forms.Form):
 class PedidoForm(forms.ModelForm):
     class Meta:
         model = Pedido
-        fields = ['nombre', 'apellidos', 'email', 'direccion', 'ciudad', 'codigo_postal']
+        fields = ['nombre', 'apellidos', 'email', 'direccion', 'ciudad', 'codigo_postal', 'metodo_pago']
 
 class DatosEnvioForm(forms.ModelForm):
     class Meta:

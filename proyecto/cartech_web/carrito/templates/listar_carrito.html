@@ -40,11 +40,15 @@ Carrito
                                             <p>Combustible: {{ coche.combustible }}</p>
                                             <p>Conducción: {{ coche.conduccion }}</p>
                                             <p>Accesorios:</p>
-                                            <ul style="list-style: none; padding: 0;">
-                                                {% for accesorio in eleccion.accesorios.all %}
-                                                    <li>{{ accesorio.nombre }} - Precio: {{ accesorio.precio }} €</li>
-                                                {% endfor %}
-                                            </ul>
+                                            {% if eleccion.accesorios.exists %}
+                                                <ul style="list-style: none; padding: 0;">
+                                                    {% for accesorio in eleccion.accesorios.all %}
+                                                        <li>{{ accesorio.nombre }} - Precio: {{ accesorio.precio }} €</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p>Sin accesorios</p>
+                                            {% endif %}
                                             <p style="font-size: 1.2em;">Precio base: {{ eleccion.get_precio_base }} €</p>
                                         </td>
                                         <td>{{ eleccion.get_precio_unitario }} €</td>

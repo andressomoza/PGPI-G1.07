@@ -70,6 +70,10 @@ def checkout(request):
     detalles_usuario = User.objects.get(username=usuario)
     pedido = Pedido.objects.create(usuario=usuario)
     print(detalles_usuario)
+
+    precio_total = 0
+    for eleccion in elecciones:
+        precio_total += eleccion.get_precio_total()
     
     if request.method == 'POST':
         form = PedidoForm(request.user, request.POST)
@@ -81,6 +85,7 @@ def checkout(request):
             pedido.direccion = form.cleaned_data['direccion']
             pedido.ciudad = form.cleaned_data['ciudad']
             pedido.codigo_postal = form.cleaned_data['codigo_postal']
+            pedido.metodo_pago = form.cleaned_data['metodo_pago']
             pedido.save()
 
             return redirect('página de confirmación')
@@ -96,7 +101,7 @@ def checkout(request):
             #'codigo_postal': detalles_usuario.codigo_postal,
         })
         
-    return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form})
+    return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form, 'precio_total': precio_total })
 
 
 class PaymentView(View):
