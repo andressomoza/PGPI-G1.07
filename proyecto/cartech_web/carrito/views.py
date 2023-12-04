@@ -54,6 +54,13 @@ def delete(request, eleccion_id):
     
     return render(request, 'listar_carrito.html', {'elecciones': elecciones})
 
+def checkout(request):
+    usuario = request.user.id
+    elecciones = Eleccion.objects.all()
+    elecciones = elecciones.filter(usuario_id=usuario)   
+
+    return render(request, 'checkout.html', { 'elecciones': elecciones })
+
 class PaymentView(View):
     template_name = 'payment_form.html'
 

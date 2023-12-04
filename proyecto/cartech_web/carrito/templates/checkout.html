@@ -1,46 +1,28 @@
-<!-- carrito/templates/carrito/checkout.html -->
-
-<script src="https://js.stripe.com/v3/"></script>
-<script>
-    var stripe = Stripe('pk_test_51OJBJcLdnlgk3Y2dpJzpzaN9fOTPdIsDcj2Yivp62YrdNGS4qx5kGyWyfCERA1SlDUwjKVhwacTUDvmt8iliYOXn008x30lhKK');
-    var elements = stripe.elements();
-
-    var card = elements.create('card');
-    card.mount('#card-element');
-
-    var form = document.getElementById('payment-form');
-
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        stripe.createToken(card).then(function (result) {
-            if (result.error) {
-                // Informar al usuario sobre errores en la tarjeta
-            } else {
-                // Enviar el token al servidor
-                fetch('/carrito/checkout/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        stripeToken: result.token.id,
-                    }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    // Manejar la respuesta del servidor (éxito o error)
-                });
-            }
-        });
-    });
-</script>
-
-<!-- Formulario de pago -->
-<form id="payment-form">
-    <div id="card-element">
-        <!-- Elemento de tarjeta de Stripe -->
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+Checkout
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Checkout</h1>
+    <div class="order-info">
+        <h3 class="text-center">Your order</h3>
+        <ul>
+            <li>HPOLS</li>
+            {% for eleccion in elecciones %}
+            <li>
+                {{ eleccion.cantidad }}x {{ eleccion.coche.modelo }}
+                <span>${{ item.total_price }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <h4>Total: ${{ cart.get_total_price }}</h4>
     </div>
-    <button type="submit">Pagar</button>
-</form>
+    <form action="." method="post" class="order-form">
+        {{ form|crispy }}
+        <p><input class="btn btn-primary btn-sm btn-block" type="submit" value="Place order"></p>
+        {% csrf_token %}
+    </form>
+</div>
+{% endblock %}

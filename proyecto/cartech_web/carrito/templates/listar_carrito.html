@@ -1,4 +1,4 @@
-{% extends "shop/base/base.html" %}
+{% extends "base/base.html" %}
 {% load static %}
 {% block title %}
 {% endblock %}
@@ -34,6 +34,7 @@
                     </div>
                     {% endfor %}
                 </div>
+                <a href="{% url 'carrito:checkout' %}" class="btn btn-primary">Seguir pedido</a>
             </div>
         </div>
     </div>

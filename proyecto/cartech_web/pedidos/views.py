@@ -2,8 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from .models import Pedido
 
-'''
+
 def crear_pedido(request):
+    '''
     if request.method == 'POST':
         form = IncidenciaForm(request.POST)
         if form.is_valid():
@@ -13,7 +14,9 @@ def crear_pedido(request):
         form = IncidenciaForm()
 
     return render(request, 'incidencias/crear_incidencia.html', {'form': form})
-'''
+    '''
+    return render(request, 'checkout.html')
+
 
 def listar_pedidos(request):
     status = request.GET.get('status', '')
