@@ -12,6 +12,7 @@ from .forms import PaymentForm, PedidoForm, DatosClienteForm, DatosEnvioForm
 from pedidos.models import Pedido
 from django.contrib.auth.models import User
 
+
 import stripe
 
 stripe.api_key = 'sk_test_51OJBJcLdnlgk3Y2d9IrdBowToBzxmDRdI2NgP2rTC9tBhTcW2Gebhqllorvp5g1Ru1aSG9Uw1R8k2NN8blJneUyR00Z3eVQBGi'
@@ -104,16 +105,27 @@ def checkout(request):
     return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form, 'precio_total': precio_total })
 
 
+
+
+
 class PaymentView(View):
     template_name = 'payment_form.html'
 
     def get(self, request):
+        usuario = request.user.id
+        elecciones = Eleccion.objects.filter(usuario_id=usuario)
+        precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
         form = PaymentForm()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'precio_total': precio_total})
 
     def post(self, request):
         form = PaymentForm(request.POST)
         if form.is_valid():
+            usuario = request.user.id
+            elecciones = Eleccion.objects.filter(usuario_id=usuario)
+            precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
             api_data = {
                 'card_number': form.cleaned_data['card_number'],
                 'expiry_month': form.cleaned_data['expiry_month'],
@@ -121,7 +133,7 @@ class PaymentView(View):
                 'cvc': form.cleaned_data['cvc'],
             }
 
-            response = self.stripe_card_payment(data_dict=api_data)
+            response = self.stripe_card_payment(data_dict=api_data, amount=precio_total)
 
             if response.get('status') == status.HTTP_200_OK:
                return redirect('carrito:listar_carrito')
@@ -130,7 +142,10 @@ class PaymentView(View):
         else:
             return render(request, self.template_name, {'form': form})
 
-    def stripe_card_payment(self, data_dict):
+    
+
+
+    def stripe_card_payment(self, data_dict, amount):
         try:
             card_details = {
                 "type": "card",
@@ -139,28 +154,16 @@ class PaymentView(View):
                     "exp_month": data_dict['expiry_month'],
                     "exp_year": data_dict['expiry_year'],
                     "cvc": data_dict['cvc'],
-                },
+                }
             }
-            # You can also get the amount from the database by creating a model
+
             payment_intent = stripe.PaymentIntent.create(
-                amount=1000,
+                amount=int(amount * 100),  # Multiplica por 100 para convertir a centavos
                 currency='eur',
             )
-            payment_intent_modified = stripe.PaymentIntent.modify(
-                payment_intent['id'],
-                payment_method=card_details['id'],
-            )
-            try:
-                payment_confirm = stripe.PaymentIntent.confirm(payment_intent['id'])
-                payment_intent_modified = stripe.PaymentIntent.retrieve(payment_intent['id'])
-            except:
-                payment_intent_modified = stripe.PaymentIntent.retrieve(payment_intent['id'])
-                payment_confirm = {
-                    "stripe_payment_error": "Failed",
-                    "code": payment_intent_modified['last_payment_error']['code'],
-                    "message": payment_intent_modified['last_payment_error']['message'],
-                    'status': "Failed"
-                }
+
+            # Resto del código...
+
             if payment_intent_modified and payment_intent_modified['status'] == 'succeeded':
                 response = {
                     'message': "Card Payment Success",
@@ -177,11 +180,31 @@ class PaymentView(View):
                     "payment_intent": payment_intent_modified,
                     "payment_confirm": payment_confirm
                 }
-        except:
+
+        except stripe.error.CardError as e:
+            # Since it's a CardError, it should be caught and handled separately
             response = {
                 'error': "Your card number is incorrect",
                 'status': status.HTTP_400_BAD_REQUEST,
                 "payment_intent": {"id": "Null"},
                 "payment_confirm": {'status': "Failed"}
             }
+        except stripe.error.StripeError as e:
+            # Handle other Stripe errors
+            response = {
+                'error': "An error occurred while processing your payment",
+                'status': status.HTTP_400_BAD_REQUEST,
+                "payment_intent": {"id": "Null"},
+                "payment_confirm": {'status': "Failed"}
+            }
+        except Exception as e:
+            # Handle other general exceptions
+            response = {
+                'error': str(e),
+                'status': status.HTTP_400_BAD_REQUEST,
+                "payment_intent": {"id": "Null"},
+                "payment_confirm": {'status': "Failed"}
+            }
+
         return response
+
