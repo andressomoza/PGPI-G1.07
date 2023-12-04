@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404
 from .models import  Coche, Accesorio, Eleccion
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from .forms import CocheForm, AccesorioForm
 from django.contrib.auth.decorators import user_passes_test
@@ -46,7 +45,7 @@ def borrar_accesorio(request, id):
 
     if request.method == 'POST':
         accesorio.delete()
-        return HttpResponseRedirect('/list/accesorios')  # Ajusta la redirección según tus necesidades
+        return HttpResponseRedirect('/list/accesorios')  
 
     return render(request, 'accesorios/borrar_accesorio.html', {'accesorio': accesorio})
 
