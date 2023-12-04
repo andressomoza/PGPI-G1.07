@@ -4,7 +4,7 @@ from .models import Incidencia
 #register
 @admin.register(Incidencia)
 class IncidenciaAdmin(admin.ModelAdmin):
-    list_display = ['descripcion', 'urgencia']
+    list_display = ['titulo','descripcion', 'urgencia']
 
 
     

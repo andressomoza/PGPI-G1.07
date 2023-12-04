@@ -12,7 +12,6 @@ class Opinion(models.Model):
         (5, 'Cinco estrellas'),
     ]
 
-    titulo = models.CharField(max_length=255)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     descripcion = models.TextField()
     valoracion = models.IntegerField(choices=ESTRELLAS_CHOICES, validators=[MinValueValidator(1), MaxValueValidator(5)])

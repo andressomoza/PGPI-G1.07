@@ -4,5 +4,5 @@ from .models import Opinion
 class OpinionForm(forms.ModelForm):
     class Meta:
         model = Opinion
-        fields = ['titulo', 'descripcion', 'valoracion']
+        fields = [ 'descripcion', 'valoracion']
 
