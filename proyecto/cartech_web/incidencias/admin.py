@@ -3,7 +3,7 @@ from .models import Incidencia
 
 #register
 @admin.register(Incidencia)
-class CategoryAdmin(admin.ModelAdmin):
+class IncidenciaAdmin(admin.ModelAdmin):
     list_display = ['descripcion', 'urgencia']
 
 

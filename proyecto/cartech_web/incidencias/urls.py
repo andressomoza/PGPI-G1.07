@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 
-app_name = 'incidencias'  # Agrega esta línea
+app_name = 'incidencias' 
 
 urlpatterns = [
     path('', views.pagina_base, name='base'),
