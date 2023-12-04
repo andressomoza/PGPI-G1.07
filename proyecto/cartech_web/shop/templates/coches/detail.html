@@ -93,10 +93,14 @@
                 {% endif %}
                 <p>{{ accesorio.nombre }} </p>
                 <p>{{ accesorio.precio }}€ </p>
-                <label class="d-block">
-                  <input type="checkbox" name="accesorios_seleccionados" value="{{ accesorio.id }}">
-                  Seleccionar
-                </label>
+                {% if accesorio.stock == 0 %}
+                  <p class="text-danger">¡Producto Agotado!</p>
+                {% else %}
+                  <label class="d-block">
+                    <input type="checkbox" name="accesorios_seleccionados" value="{{ accesorio.id }}">
+                    Seleccionar
+                  </label>
+                {% endif %}
               </div>
             </div>
           </div>
