@@ -9,4 +9,6 @@ urlpatterns = [
     path('list', views.listar_incidencias, name='listar_incidencias'),
     path('new', views.crear_incidencia, name='crear_incidencia'),
     path('me', views.mis_incidencias, name='mis_incidencias'),
+    path('delete/<int:id>', views.borrar_incidencia, name='borrar_incidencia'),
+    
 ]

@@ -59,8 +59,8 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="{% url "shop:listado_coches" %}">Coches</a></li>
                     <li><a href="{% url "shop:listado_accesorios" %}">Accesorios</a></li>
-                    <li><a href="{% url "pedidos:mis_pedidos" %}">Pedidos</a></li>
-                    <li><a href="{% url "pedidos:buscar_pedido" %}">Incidencias</a></li>
+                    <li><a href="{% url "pedidos:listar_pedidos" %}">Pedidos</a></li>
+                    <li><a href="{% url "incidencias:listar_incidencias" %}">Incidencias</a></li>
                 </ul>
             </div>
         </nav>
@@ -85,8 +85,6 @@
                 <li><a href="/">Home</a></li>
                 <li><a href="{% url "shop:selector" %}">Configurador coches</a></li>
                 <li><a href="/incidencias/">Incidencias</a></li>
-                <li><a href="{% url "pedidos:mis_pedidos" %}">Mis pedidos</a></li>
-                <li><a href="{% url "pedidos:buscar_pedido" %}">Pedidos</a></li>
                 <li><a href="shop.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
