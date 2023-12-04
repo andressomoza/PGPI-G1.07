@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'incidencias.apps.IncidenciasConfig',
     'pedidos.apps.PedidosConfig',
     'carrito.apps.CarritoConfig',
+    'opiniones.apps.OpinionesConfig',
     'rest_framework'
 ]
 

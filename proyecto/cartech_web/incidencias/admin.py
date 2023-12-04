@@ -3,8 +3,8 @@ from .models import Incidencia
 
 #register
 @admin.register(Incidencia)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['descripcion', 'urgencia']
+class IncidenciaAdmin(admin.ModelAdmin):
+    list_display = ['titulo','descripcion', 'urgencia']
 
 
     

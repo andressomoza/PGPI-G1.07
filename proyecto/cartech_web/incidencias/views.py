@@ -15,7 +15,7 @@ def crear_incidencia(request):
             incidencia = form.save(commit=False)
             incidencia.usuario = request.user 
             incidencia.save()
-            return redirect('/incidencias/me') 
+            return HttpResponseRedirect('/incidencias/me')
     else:
         form = IncidenciaForm()
 

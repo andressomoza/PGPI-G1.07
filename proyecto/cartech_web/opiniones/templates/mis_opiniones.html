@@ -1,0 +1,47 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}
+{% endblock %}
+{% block content %}
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            {% with base_url="/" %}
+            <div class="col-md-12 mb-0"><a href="{{ base_url }}">Opiniones</a> <span class="mx-2 mb-0">/</span> <strong
+                    class="text-black">Mis opiniones</strong></div>
+            {% endwith %}
+        </div>
+    </div>
+</div>
+<body>
+<div class="site-section">
+    <div class="container">
+            <div class="col-md-9 order-2">
+                <div class="row mb-5">
+                    {% for opinion in opiniones %}
+                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                        <div class="block-4 text-center border">
+                            <div class="block-4-text p-4">
+                                <p class="mb-0">Usuario: {{ opinion.usuario.first_name }}</p>
+                                <p class="mb-0">Descripcion: {{ opinion.descripcion }}</p>
+                                <div class="text-primary font-weight-bold">
+                                    Valoración:
+                                    {% for i in "12345" %}
+                                        {% if i|add:0 <= opinion.valoracion %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}

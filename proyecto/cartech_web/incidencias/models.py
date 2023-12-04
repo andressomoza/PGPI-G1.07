@@ -9,9 +9,8 @@ class Incidencia(models.Model):
         ('alta', 'Alta'),
     ]
 
+    titulo = models.CharField(max_length=255)
     descripcion = models.TextField()
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     urgencia = models.CharField(max_length=5, choices=DESCRIPCION_CHOICES)
 
-    def __str__(self):
-        return f"{self.descripcion} - {self.urgencia}"
