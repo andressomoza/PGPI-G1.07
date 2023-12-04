@@ -1,0 +1,74 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}
+{% if category %}{{ category.name }}{% else %}Incidencias{% endif %}
+{% endblock %}
+{% block content %}
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            {% with base_url="/" %}
+            <div class="col-md-12 mb-0"><a href="{{ base_url }}">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                    class="text-black">Opiniones</strong></div>
+            {% endwith %}
+
+        </div>
+    </div>
+</div>
+
+<body>
+    <div class="site-section">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md-3 order-1 mb-5 mb-md-0">
+                    <form method="get" id="filtrado">
+                        <h3 class="text-black mb-3">Filtrar</h3>
+                        <div class="form-group">
+
+
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Aplicar Filtro</button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters(event)">Resetear
+                            Filtros</button>
+                    </form>
+                </div>
+                <div class="col-md-9 order-2">
+                    <div class="row mb-5">
+                        {% for opinion in opiniones %}
+                        <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                            <div class="block-4 text-center border">
+                                <div class="block-4-text p-4">
+                                    <p class="mb-0">Usuario: {{ opinion.usuario.first_name }}</p>
+                                    <p class="mb-0">Descripcion: {{ opinion.descripcion }}</p>
+                                    <div class="text-primary font-weight-bold">
+                                        Valoración:
+                                        {% for i in "12345" %}
+                                            {% if i|add:0 <= opinion.valoracion %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    
+                                    <a href="{% url "opiniones:borrar_opinion" opinion.id %}"><button type="button"
+                                            class="btn btn-danger btn-smb" name="eliminar">Eliminar</button></a>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function resetFilters(event) {
+            var url = "/";
+            window.location.href = url
+        }
+    </script>
+</body>
+{% endblock %}
