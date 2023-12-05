@@ -2,65 +2,96 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
+ Detalles del Pedido
 {% endblock %}
 {% block content %}
 <div class="bg-light py-3">
-    <div class="container">
-      <div class="row">
-        {% with base_url="/pedidos/" %}
-        <div class="col-md-12 mb-0"><a href="{{ base_url }}">Pedidos</a> <span class="mx-2 mb-0">/</span> <strong
-            class="text-black">{{ eleccion.coche.marca }} {{ eleccion.coche.modelo }}</strong></div>
-        {% endwith %}
-      </div>
-    </div>
-  </div>
-
-  <div class="order-info">
-    <h3 class="text-center">Tu pedido {{ pedido.id }}</h3>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th class="text-center align-middle">Imagen</th>
-                <th class="text-center align-middle">Producto</th>
-                <th class="text-center align-middle">Cantidad</th>
-                <th class="text-center align-middle">Precio unitario</th>
-                <th class="text-center align-middle">Precio total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for eleccion in elecciones %}
-            <tr>
-                <td class="text-center align-middle">
-                    <img src="{{ eleccion.coche.imagen.url }}" alt="{{ eleccion.coche.modelo }}" width="100" height="100">
-                </td>
-                <td class="align-middle">
-                    <p class="text-center"><strong>{{ eleccion.cantidad }}x {{ eleccion.coche.modelo }}</strong></p>
-                    <p style="margin-bottom: 5px; text-align: center;">Combustible: {{ eleccion.coche.combustible }}</p>
-                    <p style="margin-bottom: 5px; text-align: center;">Conducción: {{ eleccion.coche.conduccion }}</p>
-                    <p style="margin-bottom: 0; text-align: center;">Accesorios:</p>
-                    <ul style="list-style: none; padding: 0; margin: 0; text-align: center;">
-                        {% for accesorio in eleccion.accesorios.all %}
-                        <li>{{ accesorio.nombre }} - Precio: {{ accesorio.precio }} €</li>
-                        {% endfor %}
-                    </ul>
-                </td>
-                <td class="text-center align-middle">{{ eleccion.cantidad }}</td>
-                <td class="text-center align-middle">{{ eleccion.get_precio_unitario }} €</td>
-                <td class="text-center align-middle">{{ eleccion.get_precio_total }} €</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <h4 class="text-center">Total: {{ precio_total }} €</h4>
-    
-    <!-- Información adicional del pedido -->
-    <div class="text-center">
-        <p><strong>Nombre:</strong> {{ pedido.nombre }}</p>
-        <p><strong>Apellidos:</strong> {{ pedido.apellidos }}</p>
-        <p><strong>Dirección:</strong> {{ pedido.direccion }}</p>
-        <p><strong>Ciudad:</strong> {{ pedido.ciudad }}</p>
-        <p><strong>Código Postal:</strong> {{ pedido.codigo_postal }}</p>
+  <div class="container">
+    <div class="row">
+      {% with base_url="/pedidos/" %}
+      <div class="col-md-12 mb-0"><a href="{{ base_url }}">Pedidos</a> <span class="mx-2 mb-0">/</span> <strong
+          class="text-black">{{ coche.marca }} {{ coche.modelo }}</strong></div>
+      {% endwith %}
     </div>
   </div>
 </div>
+
+<div class="site-section">
+  <div class="container">
+    <h2 class="font-weight-bold mb-4">Pedido: {{pedido.id_pedido}}</h2>
+
+    <div class="row">
+      {% for eleccion in elecciones %}
+        <div class="col-md-6 mb-4">
+          <div class="card">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="{{ eleccion.coche.imagen.url }}" alt="{{ eleccion.coche.nombre }}" class="img-fluid rounded">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{ eleccion.coche.marca }} {{ eleccion.coche.modelo }}</h5>
+                  <p class="card-text">Cantidad: {{ eleccion.cantidad }}</p>
+                  <p class="card-text">Precio: {{ eleccion.coche.precio_inicial }}€</p>
+
+                  {% if eleccion.accesorios.exists %}
+                    <h6 class="font-weight-bold mt-3">Accesorios:</h6>
+                    {% for accesorio in eleccion.accesorios.all %}
+                      <div class="row mt-2">
+                        <div class="col-md-4">
+                          <img src="{{ accesorio.imagen.url }}" alt="{{ accesorio.nombre }}" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-8">
+                          <p class="card-text">{{ accesorio.nombre }}</p>
+                          <p class="card-text">Precio: {{ accesorio.precio }}€</p>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+
+                  <hr class="my-3">
+                  <p class="card-text font-weight-bold">Precio total: {{ eleccion.get_precio_total }}€</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <h4 class="font-weight-bold">Detalles del Pedido</h4>
+        <p class="font-weight-bold">Estado del Pedido: {{ pedido.status }}</p>
+        <p class="font-weight-bold text-danger">Precio Total del Pedido: {{ precio_total }}€</p>
+      </div>
+    </div>
+    {% if user.is_authenticated and user.is_staff%}
+    <a href="{% url "pedidos:editar_pedido" pedido.id %}"><button type="button" class="btn btn-primary" name="editar">Editar</button></a>
+    <a href="{% url "pedidos:borrar_pedido" pedido.id %}"><button type="button" class="btn btn-primary" name="editar">Eliminar</button></a>
+
+    {% endif %} 
+  </div>
+</div>
+
+<style>
+  .card {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+  }
+
+  .card img {
+    transition: transform 0.2s;
+  }
+
+  .card:hover img {
+    transform: scale(1.1);
+  }
+</style>
+
 {% endblock %}
+

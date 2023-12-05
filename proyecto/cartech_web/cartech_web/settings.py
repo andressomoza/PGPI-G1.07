@@ -6,11 +6,13 @@ SECRET_KEY = 'django-insecure-2)#)!^d0_$--2(3+x(7fi$yacn0-a8a7zuwlt@_=r-+@lh$hlj
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
+
+
 
 
 INSTALLED_APPS = [
@@ -28,8 +30,13 @@ INSTALLED_APPS = [
     'pedidos.apps.PedidosConfig',
     'carrito.apps.CarritoConfig',
     'opiniones.apps.OpinionesConfig',
-    'rest_framework'
+    'rest_framework',
+    'user',
+
 ]
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -42,6 +49,12 @@ MIDDLEWARE = [
 ]
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+AUTH_USER_MODEL = 'user.User'
+
+
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 ROOT_URLCONF = 'cartech_web.urls'
 

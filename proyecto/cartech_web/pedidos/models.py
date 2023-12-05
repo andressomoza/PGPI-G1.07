@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from user.models import User
+from cartech_web.choices import MetodoPago
 import uuid
 
 class Pedido(models.Model):
@@ -8,9 +9,7 @@ class Pedido(models.Model):
         CAMINO = 'camino', 'Camino'
         FABRICACION = 'fabricacion', 'Fabricacion'
     
-    class MetodoPago(models.TextChoices):
-        CONTRA_REEMBOLSO =  'contra_reembolso', 'Contra reembolso'
-        TARJETA =  'tarjeta', 'Tarjeta'
+    
 
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     

@@ -41,8 +41,9 @@
                     <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
                         <div class="block-4 text-center border">
                             <div class="block-4-text p-4">
-                                <p class="mb-0"><a href="{{pedido.id}}" %}">Coche: {{ pedido.eleccion.coche.marca }} {{ pedido.eleccion.coche.modelo }}</a></p>
+                                <p class="mb-0"><a href="{{pedido.id}}" %}">ID pedido: {{pedido.id_pedido}}</a></p>
                                 <p class="mb-0">Estado: {{ pedido.status }}</p>
+                                <a href="{% url "pedidos:borrar_pedido" pedido.id %}"><button type="button" class="btn btn-danger btn-smb" name="eliminar">Eliminar</button></a>
                             </div>
                         </div>
                     </div>
