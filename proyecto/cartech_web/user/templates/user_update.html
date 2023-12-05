@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2>Actualizar perfil</h2>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="form-group"></div>
+                            <button type="submit" class="btn btn-primary btn-block">Guardar cambios</button>
+                        </div>
+                    </form>
+                    <div class="form-group">
+                        <a href="{% url 'cambiar-contrasena' %}" class="btn btn-secondary btn-block rounded-0">Cambiar contraseña</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
