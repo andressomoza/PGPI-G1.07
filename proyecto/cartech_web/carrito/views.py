@@ -105,9 +105,6 @@ def checkout(request):
     return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form, 'precio_total': precio_total })
 
 
-
-
-
 class PaymentView(View):
     template_name = 'payment_form.html'
 
@@ -133,19 +130,24 @@ class PaymentView(View):
                 'cvc': form.cleaned_data['cvc'],
             }
 
-            response = self.stripe_card_payment(data_dict=api_data, amount=precio_total)
+
+            # Obtener información del usuario y elecciones
+            usuario = request.user.id
+            elecciones = Eleccion.objects.filter(usuario_id=usuario)
+            precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
+            response = self.stripe_card_payment(data_dict=api_data, usuario=usuario, elecciones=elecciones, precio_total=precio_total)
 
             if response.get('status') == status.HTTP_200_OK:
-               return redirect('carrito:listar_carrito')
+                return redirect('carrito:listar_carrito')
             else:
                 return redirect('carrito:listar_carrito')
         else:
             return render(request, self.template_name, {'form': form})
 
-    
 
+    def stripe_card_payment(self, data_dict, usuario, elecciones, precio_total):
 
-    def stripe_card_payment(self, data_dict, amount):
         try:
             card_details = {
                 "type": "card",
@@ -157,50 +159,33 @@ class PaymentView(View):
                 }
             }
 
-            payment_intent = stripe.PaymentIntent.create(
-                amount=int(amount * 100),  # Multiplica por 100 para convertir a centavos
-                currency='eur',
-            )
 
-            # Resto del código...
+            # Puedes usar 'usuario', 'elecciones', y 'precio_total' aquí según sea necesario
+            print(f"Usuario: {usuario}")
+            print(f"Elecciones: {elecciones}")
+            print(f"Precio total: {precio_total}")
 
-            if payment_intent_modified and payment_intent_modified['status'] == 'succeeded':
-                response = {
-                    'message': "Card Payment Success",
-                    'status': status.HTTP_200_OK,
-                    "card_details": card_details,
-                    "payment_intent": payment_intent_modified,
-                    "payment_confirm": payment_confirm
-                }
-            else:
-                response = {
-                    'message': "Card Payment Failed",
-                    'status': status.HTTP_400_BAD_REQUEST,
-                    "card_details": card_details,
-                    "payment_intent": payment_intent_modified,
-                    "payment_confirm": payment_confirm
-                }
+            # Resto de tu código de stripe_card_payment...
+            # Recuerda ajustar esta parte según las necesidades específicas de tu aplicación.
 
         except stripe.error.CardError as e:
-            # Since it's a CardError, it should be caught and handled separately
             response = {
-                'error': "Your card number is incorrect",
+                'error': f"Card error: {e.error.message}",
                 'status': status.HTTP_400_BAD_REQUEST,
                 "payment_intent": {"id": "Null"},
                 "payment_confirm": {'status': "Failed"}
             }
         except stripe.error.StripeError as e:
-            # Handle other Stripe errors
             response = {
-                'error': "An error occurred while processing your payment",
+                'error': f"Stripe error: {e.error.message}",
                 'status': status.HTTP_400_BAD_REQUEST,
                 "payment_intent": {"id": "Null"},
                 "payment_confirm": {'status': "Failed"}
             }
         except Exception as e:
-            # Handle other general exceptions
+
             response = {
-                'error': str(e),
+                'error': f"An unexpected error occurred: {str(e)}",
                 'status': status.HTTP_400_BAD_REQUEST,
                 "payment_intent": {"id": "Null"},
                 "payment_confirm": {'status': "Failed"}

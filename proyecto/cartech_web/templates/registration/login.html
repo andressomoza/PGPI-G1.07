@@ -1,27 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Cartech Web</title>
-    <!-- Agrega aquí tus enlaces a las hojas de estilo (CSS) si es necesario -->
-</head>
-<body>
+{% extends "base/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %} 
+{% block content %}
 
-    <div style="text-align: center; margin-top: 50px;">
-        <h2>Login - Cartech Web</h2>
-        <form action="{% url 'login' %}" method="post">
-            {% csrf_token %}
-            <label for="username">Usuario:</label>
-            <input type="text" id="username" name="username" required>
-            <br>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" required>
-            <br>
-            <input type="submit" value="Iniciar sesión">
-        </form>
-        <p>¿No tienes una cuenta? <a href="{% url 'signup' %}">Regístrate aquí</a></p>
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-center text-primary mb-4">Login - Cartech Web</h2>
+                    <form action="{% url 'login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">Usuario:</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Contraseña:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary btn-block" value="Iniciar sesión">
+                        </div>
+                    </form>
+                    <p class="text-center">¿No tienes una cuenta? <a href="{% url 'signup' %}">Regístrate aquí</a></p>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-</body>
-</html>
+{% endblock %}
