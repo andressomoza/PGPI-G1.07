@@ -77,7 +77,7 @@ def checkout(request):
         precio_total += eleccion.get_precio_total()
     
     if request.method == 'POST':
-        form = PedidoForm(request.user, request.POST)
+        form = PedidoForm(request.POST)
         if form.is_valid():
             # Procesar el formulario y guardar los cambios en la dirección
             pedido.nombre = form.cleaned_data['nombre']
@@ -87,9 +87,14 @@ def checkout(request):
             pedido.ciudad = form.cleaned_data['ciudad']
             pedido.codigo_postal = form.cleaned_data['codigo_postal']
             pedido.metodo_pago = form.cleaned_data['metodo_pago']
-            pedido.save()
 
-            return redirect('página de confirmación')
+            if pedido.metodo_pago == 'contrareembolso':
+                pedido.save()
+                return redirect('página de confirmación')
+            else:
+                return HttpResponseRedirect('/carrito/make_payment')  
+
+            
     else:
         
         # Si es una solicitud GET, inicializa el formulario con los datos de la dirección
