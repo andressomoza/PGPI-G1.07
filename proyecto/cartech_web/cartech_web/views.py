@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import logout, login
+from django.contrib.auth import logout, login, authenticate
 from .forms import CustomUserCreationForm
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,6 +11,8 @@ from .forms import CustomUserUpdateForm, CustomPasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
+import random
+import string
 
 
 
@@ -43,6 +45,27 @@ def signup(request):
         form = CustomUserCreationForm()
 
     return render(request, 'registration/signup.html', {'form': form})
+
+def create_default_user(request):
+
+    base_username = 'default_user'
+    base_email = 'default_user@example.com'
+    suffix = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+    default_user_data = {
+        'username': f'{base_username}_{suffix}',
+        'password': 'password123',  
+        'email': f'{base_email}_{suffix}',
+    }
+    user_exists = User.objects.filter(username=default_user_data['username']).exists()
+
+    if not user_exists:
+        user = User.objects.create_user(**default_user_data)
+
+        
+        user = authenticate(request, username=user.email, password=default_user_data['password'])
+        login(request, user)
+    
+    return redirect('/')  
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
