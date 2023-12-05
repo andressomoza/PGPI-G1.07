@@ -12,6 +12,8 @@ from .forms import PaymentForm, PedidoForm, DatosClienteForm, DatosEnvioForm
 from pedidos.models import Pedido
 from user.models import User
 from django.urls import reverse
+import smtplib
+from email.mime.text import MIMEText
 
 
 import stripe
@@ -20,6 +22,41 @@ stripe.api_key = 'sk_test_51OJBJcLdnlgk3Y2d9IrdBowToBzxmDRdI2NgP2rTC9tBhTcW2Gebh
 
 def home(request):
     return render(request, 'shop/home.html')
+
+
+def send_email(reci, cuerpo):
+    subject = "¡Pedido realizado!"
+    body = cuerpo
+    sender = "cartechw@gmail.com"
+    recipient = reci
+    password = "wafo rwpp osty blpg"
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = ', '.join(recipient)
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
+       smtp_server.login(sender, password)
+       smtp_server.sendmail(sender, recipient, msg.as_string())
+    print("Message sent!")
+
+def preparar_cuerpo_email(pedido, elecciones, precio_total):
+    cuerpo = ""
+    str1 = "¡Su pedido con ID " + str(pedido.id) + " ha sido recibido!\n"
+    str2 = "Los datos del pedido son: " + pedido.nombre + " " + pedido.apellidos + " en la dirección: " + pedido.direccion + ", " + pedido.ciudad + " (" + str(pedido.codigo_postal) + ")\n"
+    str3 = "El contenido del pedido es el siguiente:\n"
+    cuerpo = cuerpo + str1 + str2 + str3
+    for eleccion in elecciones:
+        str4 = " - " + str(eleccion.cantidad) + "x Marca: " + eleccion.coche.marca + " " + eleccion.coche.modelo + ". Combustible: " + eleccion.coche.combustible + ". Conducción: " + eleccion.coche.conduccion + ". Consumo:" + str(eleccion.coche.consumo) + ". Caballos: " + str(eleccion.coche.caballos) + ". Precio inicial: " + str(eleccion.coche.precio_inicial) + "€. "
+        str5 = "Con los siguientes accesorios:"
+
+        for accesorio in eleccion.accesorios.all():
+            str6 = " " + accesorio.nombre + ", cuyo precio es " + str(accesorio.precio) + "€. "
+            str5 = str5 + str6
+        str4 = str4 + str5
+        cuerpo = cuerpo + str4
+    cuerpo = cuerpo + "\nPrecio total: " + str(precio_total) + "€."
+    return cuerpo  
+
 
 # @login_required
 def listar_carrito(request):
@@ -38,14 +75,15 @@ def add(request, eleccion_id):
     eleccion = get_object_or_404(Eleccion, id=eleccion_id)
 
     print(eleccion)
-    eleccion.cantidad += 1
-    eleccion.save()
+    if eleccion.coche.stock > eleccion.cantidad:
+        eleccion.cantidad += 1
+        eleccion.save()
 
     usuario = request.user.id
     elecciones = Eleccion.objects.all()
     elecciones = elecciones.filter(usuario_id=usuario)
 
-    return render(request, 'listar_carrito.html', {'elecciones': elecciones})
+    return redirect('carrito:listar_carrito')
 
 def delete(request, eleccion_id):
     eleccion = get_object_or_404(Eleccion, id=eleccion_id)
@@ -61,8 +99,16 @@ def delete(request, eleccion_id):
     elecciones = Eleccion.objects.all()
     elecciones = elecciones.filter(usuario_id=usuario)
     
-    return render(request, 'listar_carrito.html', {'elecciones': elecciones})
+    return redirect('carrito:listar_carrito')
 
+def limpiar(request, eleccion_id):
+    eleccion = get_object_or_404(Eleccion, id=eleccion_id)
+    eleccion.delete()
+
+    usuario = request.user.id
+    elecciones = Eleccion.objects.all()
+    elecciones = elecciones.filter(usuario_id=usuario)
+    return redirect('carrito:listar_carrito')
 
 def checkout(request):
     usuario = request.user
@@ -92,9 +138,16 @@ def checkout(request):
                 for eleccion in elecciones:
                     eleccion.comprado = True
                     eleccion.pedido = pedido
+                    coche = Coche.objects.filter(id=eleccion.coche.id)
+                    coche = coche.get()
+                    coche.stock = coche.stock - eleccion.cantidad
+                    coche.save()
                     eleccion.save()
 
                 pedido.save()
+                
+                cuerpo = preparar_cuerpo_email(pedido, elecciones, precio_total)
+                send_email('andressomozasierra@gmail.com', cuerpo)
                 return HttpResponseRedirect(reverse('pedidos:detalle_pedido', args=[pedido.id]))
 
             else:
@@ -173,6 +226,10 @@ class PaymentView(View):
                 for eleccion in elecciones:
                     eleccion.comprado = True
                     eleccion.pedido = pedido
+                    coche = Coche.objects.filter(id=eleccion.coche.id)
+                    coche = coche.get()
+                    coche.stock = coche.stock - eleccion.cantidad
+                    coche.save()
                     eleccion.save()
                 pedido.save()
 
