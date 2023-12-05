@@ -226,6 +226,10 @@ class PaymentView(View):
                 for eleccion in elecciones:
                     eleccion.comprado = True
                     eleccion.pedido = pedido
+                    coche = Coche.objects.filter(id=eleccion.coche.id)
+                    coche = coche.get()
+                    coche.stock = coche.stock - eleccion.cantidad
+                    coche.save()
                     eleccion.save()
                 pedido.save()
 
