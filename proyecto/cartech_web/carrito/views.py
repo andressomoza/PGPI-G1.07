@@ -12,6 +12,7 @@ from .forms import PaymentForm, PedidoForm, DatosClienteForm, DatosEnvioForm
 from pedidos.models import Pedido
 from django.contrib.auth.models import User
 
+
 import stripe
 
 stripe.api_key = 'sk_test_51OJBJcLdnlgk3Y2d9IrdBowToBzxmDRdI2NgP2rTC9tBhTcW2Gebhqllorvp5g1Ru1aSG9Uw1R8k2NN8blJneUyR00Z3eVQBGi'
@@ -103,22 +104,32 @@ def checkout(request):
         
     return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form, 'precio_total': precio_total })
 
+
 class PaymentView(View):
     template_name = 'payment_form.html'
 
     def get(self, request):
+        usuario = request.user.id
+        elecciones = Eleccion.objects.filter(usuario_id=usuario)
+        precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
         form = PaymentForm()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'precio_total': precio_total})
 
     def post(self, request):
         form = PaymentForm(request.POST)
         if form.is_valid():
+            usuario = request.user.id
+            elecciones = Eleccion.objects.filter(usuario_id=usuario)
+            precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
             api_data = {
                 'card_number': form.cleaned_data['card_number'],
                 'expiry_month': form.cleaned_data['expiry_month'],
                 'expiry_year': form.cleaned_data['expiry_year'],
                 'cvc': form.cleaned_data['cvc'],
             }
+
 
             # Obtener información del usuario y elecciones
             usuario = request.user.id
@@ -134,7 +145,9 @@ class PaymentView(View):
         else:
             return render(request, self.template_name, {'form': form})
 
+
     def stripe_card_payment(self, data_dict, usuario, elecciones, precio_total):
+
         try:
             card_details = {
                 "type": "card",
@@ -143,8 +156,9 @@ class PaymentView(View):
                     "exp_month": data_dict['expiry_month'],
                     "exp_year": data_dict['expiry_year'],
                     "cvc": data_dict['cvc'],
-                },
+                }
             }
+
 
             # Puedes usar 'usuario', 'elecciones', y 'precio_total' aquí según sea necesario
             print(f"Usuario: {usuario}")
@@ -169,10 +183,13 @@ class PaymentView(View):
                 "payment_confirm": {'status': "Failed"}
             }
         except Exception as e:
+
             response = {
                 'error': f"An unexpected error occurred: {str(e)}",
                 'status': status.HTTP_400_BAD_REQUEST,
                 "payment_intent": {"id": "Null"},
                 "payment_confirm": {'status': "Failed"}
             }
+
         return response
+

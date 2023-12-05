@@ -4,34 +4,41 @@
 {% block title %}
 {% endblock %}
 {% block content %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tarjetas Categorías</title>
     <style>
-        .card-container {
-            max-width: 1200px; /* Ancho máximo del contenedor */
-            margin: 0 auto; /* Centrar el contenedor */
-            padding: 20px; /* Añadir un poco de espacio alrededor del contenedor */
+        section {
+            display: flex;
+            width: 1000px;
+            height: 430px;
+            margin: 0 auto;
         }
 
-        .card {
-            width: 400px;
-            height: 300px;
-            margin: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            overflow: hidden;
+        section a {
+            width: 25%; 
+            height: 100%;
+            overflow: hidden; 
             position: relative;
-            display: inline-block;
-            vertical-align: top;
+            text-decoration: none;
         }
 
-        .card img {
+        section a:hover {
+            width: 70%;
+        }
+
+        section img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: center;
+            opacity: .8;
+            transition: opacity 0.7s ease-in-out;
+        }
+
+        section a:hover img {
+            opacity: 1;
         }
 
         .overlay {
@@ -40,59 +47,57 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            color: #fff;
+            background: rgba(0, 0, 0, 0.5); 
+            color: white;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center;    
             text-align: center;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s ease-in-out; 
         }
 
-        .card:hover .overlay {
-            opacity: 1;
+        section a:hover .overlay {
+            opacity: 1; /* Mostrar la capa en el hover */
+        }
+
+        .center-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60vh;
         }
     </style>
 </head>
 
 <body>
-    <div class="card-container">
-        <div class="card">
-            <a href="/coches/list">
-            <img src="/media/imagenes/configura-coche.jpg" alt="Imagen 1">
-            <div class="overlay">
-                <h2>Busca todo tipo de coches</h2>
-            </div>
+    <div class='center-content'>
+        <section>
+            <a href="{% url "shop:listado_coches" %}" >
+                <img src="/media/imagenes/configura-coche.png" alt="Imagen 1">
+                <div class="overlay">
+                    <h2>Todos los coches</h2>
+                </div>
             </a>
-        </div>
-
-        <div class="card">
-            <a href="/coches/list/electricos">
-            <img src="/media/imagenes/electrico.jpg" alt="Imagen 2">
-            <div class="overlay">
-                <h2>Descubre los coches eléctricos</h2>
-            </div>
+            <a href="{% url "shop:listado_electricos" %}" >
+                <img src="/media/imagenes/electrico.png" alt="Imagen 2">
+                <div class="overlay">
+                    <h2>Descubre los mejores coches eléctricos</h2>
+                </div>
             </a>
-        </div>
-
-        <div class="card">
-            <a href="/coches/list/hibridos">
-            <img src="/media/imagenes/hibrido.jpg" alt="Imagen 3">
-            <div class="overlay">
-                <h2>Descubre los coches híbridos</h2>
-            </div>
+            <a href="{% url "shop:listado_hibridos" %}" >
+                <img src="/media/imagenes/hibrido.png" alt="Imagen 3">
+                <div class="overlay">
+                    <h2>Descubre los mejores coches híbridos</h2>
+                </div>
             </a>
-        </div>
-
-        <div class="card">
-            <a href="/coches/list/combustible">
-            <img src="/media/imagenes/combustion.jpg" alt="Imagen 4">
-            <div class="overlay">
-                <h2>Descubre los coches de combustión</h2>
-            </div>
+            <a href="{% url "shop:listado_combustible" %}" >
+                <img src="/media/imagenes/combustion.png" alt="Imagen 4">
+                <div class="overlay">
+                    <h2>Descubre los mejores coches de combustión</h2>
+                </div>
             </a>
-        </div>
+        </section>
     </div>
 </body>
 

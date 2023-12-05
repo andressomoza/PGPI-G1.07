@@ -39,7 +39,7 @@ def editar_accesorio(request, id):
         form = AccesorioForm(request.POST, request.FILES, instance=accesorio)
         if form.is_valid():
             form.save()
-            return redirect(request.META.get('HTTP_REFERER', '/list/all'))  # Ajusta la redirección según tus necesidades
+            return HttpResponseRedirect('/accesorios/list')  # Ajusta la redirección según tus necesidades
     else:
         form = AccesorioForm(instance=accesorio)
 
@@ -92,7 +92,7 @@ def crear_coche(request):
         form = CocheForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('list/all')  # Puedes definir esta vista
+            return HttpResponseRedirect('/coches/list') 
     else:
         form = CocheForm()
 
@@ -106,7 +106,7 @@ def editar_coche(request, id):
         form = CocheForm(request.POST, request.FILES, instance=coche)
         if form.is_valid():
             form.save()
-            return redirect(request.META.get('HTTP_REFERER', '/list/all'))  # Ajusta la redirección según tus necesidades
+            return HttpResponseRedirect('/coches/list') # Ajusta la redirección según tus necesidades
     else:
         form = CocheForm(instance=coche)
 
