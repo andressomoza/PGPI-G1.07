@@ -3,7 +3,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from .views import UserUpdateView
 from django.conf.urls import handler400, handler403, handler404, handler500
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,6 +17,8 @@ urlpatterns = [
     path('salir/', views.salir, name='salir'),
     path('signup/', views.signup, name='signup'),
     path('carrito/', include('carrito.urls', namespace='carrito')),
+    path('update/', UserUpdateView.as_view(), name='user_update'),
+    path('cambiar-contrasena/', auth_views.PasswordChangeView.as_view(), name='cambiar-contrasena'),
     #path('api-auth/', include('rest_framework.urls')),  # Include DRF's authentication URLs
 
     

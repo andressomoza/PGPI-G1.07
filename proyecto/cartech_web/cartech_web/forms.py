@@ -1,7 +1,13 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+
 from user.models import User
 from .choices import MetodoPago
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -32,3 +38,11 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class CustomUserUpdateForm(UserChangeForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'direccion', 'ciudad', 'codigo_postal', 'metodo_pago')

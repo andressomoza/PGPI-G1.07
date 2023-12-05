@@ -3,7 +3,22 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import logout, login
 from .forms import CustomUserCreationForm
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from user.models import User
+from .forms import CustomUserUpdateForm, CustomPasswordChangeForm
+from django.contrib.auth.views import PasswordChangeView
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
 
+
+
+
+class PasswordChange(PasswordChangeView):
+    form_class = CustomPasswordChangeForm
+    template_name = 'password.html'
+    success_url = reverse_lazy('shop:home')
 
 
 def is_admin(user):
@@ -29,6 +44,19 @@ def signup(request):
 
     return render(request, 'registration/signup.html', {'form': form})
 
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = CustomUserUpdateForm
+    template_name = 'user_update.html'
+    success_url = reverse_lazy('shop:home')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        # Puedes realizar acciones adicionales aquí si lo necesitas
+        return super().form_valid(form)
+
 def bad_request(request, exception):
     return render(request, 'errors/400_bad_request.html', status=400)
 
@@ -40,3 +68,6 @@ def not_found(request, exception):
 
 def internal_server_error(request):
     return render(request, 'errors/500_internal_server_error.html', status=500)
+
+
+    
