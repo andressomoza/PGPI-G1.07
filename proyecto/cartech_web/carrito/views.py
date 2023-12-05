@@ -95,7 +95,7 @@ def checkout(request):
                 pedido.save()
                 return HttpResponseRedirect(reverse('pedidos:detalle_pedido', args=[pedido.id]))
             else:
-                return HttpResponseRedirect('/carrito/make_payment')
+                return HttpResponseRedirect(reverse('carrito:payment_view') + f"?nombre={form.cleaned_data['nombre']}&apellidos={form.cleaned_data['apellidos']}&email={form.cleaned_data['email']}&direccion={form.cleaned_data['direccion']}&ciudad={form.cleaned_data['ciudad']}&codigo_postal={form.cleaned_data['codigo_postal']}&metodo_pago={form.cleaned_data['metodo_pago']}")
 
             
     else:
@@ -105,9 +105,10 @@ def checkout(request):
             'nombre': request.user.first_name,
             'apellidos': detalles_usuario.last_name,
             'email': detalles_usuario.email,
-            #'direccion': detalles_usuario.direccion,
-            #'ciudad': detalles_usuario.ciudad,
-            #'codigo_postal': detalles_usuario.codigo_postal,
+            'direccion': detalles_usuario.direccion,
+            'ciudad': detalles_usuario.ciudad,
+            'codigo_postal': detalles_usuario.codigo_postal,
+            'metodo_pago': detalles_usuario.metodo_pago
         })
         
     return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form, 'precio_total': precio_total })
@@ -118,7 +119,7 @@ class PaymentView(View):
 
     def get(self, request):
         usuario = request.user.id
-        elecciones = Eleccion.objects.filter(usuario_id=usuario)
+        elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
         precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
 
         form = PaymentForm()
@@ -128,7 +129,8 @@ class PaymentView(View):
         form = PaymentForm(request.POST)
         if form.is_valid():
             usuario = request.user.id
-            elecciones = Eleccion.objects.filter(usuario_id=usuario)
+            us = request.user
+            elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
             precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
 
             api_data = {
@@ -140,18 +142,27 @@ class PaymentView(View):
 
             response = self.stripe_card_payment(data_dict=api_data, amount=precio_total)
             
+            
             print("RESPONSE:")
             print(response.get('status'))
             if response.get('status'):
-                pedido = Pedido.objects.create(usuario=usuario)
-                pedido.nombre = form.cleaned_data['nombre']
-                pedido.apellidos = form.cleaned_data['apellidos']
-                pedido.email = form.cleaned_data['email']
-                pedido.direccion = form.cleaned_data['direccion']
-                pedido.ciudad = form.cleaned_data['ciudad']
-                pedido.codigo_postal = form.cleaned_data['codigo_postal']
-                pedido.metodo_pago = form.cleaned_data['metodo_pago']
-                print(pedido.metodo_pago)
+
+                nombre = request.GET.get('nombre', '')
+                apellidos = request.GET.get('apellidos', '')
+                email = request.GET.get('email', '')
+                direccion = request.GET.get('direccion', '')
+                ciudad = request.GET.get('ciudad', '')
+                codigo_postal = request.GET.get('codigo_postal', '')
+                metodo_pago = request.GET.get('metodo_pago', '')
+
+                pedido = Pedido.objects.create(usuario=us)
+                pedido.nombre = nombre
+                pedido.apellidos = apellidos
+                pedido.email = email
+                pedido.direccion = direccion
+                pedido.ciudad = ciudad
+                pedido.codigo_postal = codigo_postal
+                pedido.metodo_pago = metodo_pago
                 for eleccion in elecciones:
                     eleccion.comprado = True
                     eleccion.pedido = pedido
