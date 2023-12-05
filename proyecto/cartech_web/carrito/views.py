@@ -69,11 +69,12 @@ def checkout(request):
     elecciones = Eleccion.objects.filter(usuario=usuario, comprado=False)
     detalles_usuario = User.objects.get(username=usuario)
 
-    precio_total = 0
-    for eleccion in elecciones:
-        precio_total += eleccion.get_precio_total()
-    
-    print(request.method)
+    precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
+    # Agrega gastos de envío si el precio total es menor que 25000 euros
+    if precio_total < 25000:
+        precio_total += 200  # Añade 200 euros de gastos de envío
+
     if request.method == 'POST':
         form = PedidoForm(request.POST)
         if form.is_valid():
@@ -87,20 +88,19 @@ def checkout(request):
                 pedido.ciudad = form.cleaned_data['ciudad']
                 pedido.codigo_postal = form.cleaned_data['codigo_postal']
                 pedido.metodo_pago = form.cleaned_data['metodo_pago']
-                print(pedido.metodo_pago)
+
                 for eleccion in elecciones:
                     eleccion.comprado = True
                     eleccion.pedido = pedido
                     eleccion.save()
+
                 pedido.save()
                 return HttpResponseRedirect(reverse('pedidos:detalle_pedido', args=[pedido.id]))
-            else:
-                return HttpResponseRedirect(reverse('carrito:payment_view') + f"?nombre={form.cleaned_data['nombre']}&apellidos={form.cleaned_data['apellidos']}&email={form.cleaned_data['email']}&direccion={form.cleaned_data['direccion']}&ciudad={form.cleaned_data['ciudad']}&codigo_postal={form.cleaned_data['codigo_postal']}&metodo_pago={form.cleaned_data['metodo_pago']}")
 
-            
+            else:
+                return HttpResponseRedirect(reverse('carrito:make_payment') + f"?nombre={form.cleaned_data['nombre']}&apellidos={form.cleaned_data['apellidos']}&email={form.cleaned_data['email']}&direccion={form.cleaned_data['direccion']}&ciudad={form.cleaned_data['ciudad']}&codigo_postal={form.cleaned_data['codigo_postal']}&metodo_pago={form.cleaned_data['metodo_pago']}")
+
     else:
-        
-        # Si es una solicitud GET, inicializa el formulario con los datos de la dirección
         form = PedidoForm(initial={
             'nombre': request.user.first_name,
             'apellidos': detalles_usuario.last_name,
@@ -110,8 +110,9 @@ def checkout(request):
             'codigo_postal': detalles_usuario.codigo_postal,
             'metodo_pago': detalles_usuario.metodo_pago
         })
-        
-    return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form, 'precio_total': precio_total })
+
+    return render(request, 'checkout.html', {'elecciones': elecciones, 'form': form, 'precio_total': precio_total})
+
 
 
 class PaymentView(View):
@@ -121,6 +122,9 @@ class PaymentView(View):
         usuario = request.user.id
         elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
         precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
+        if precio_total < 25000:
+            precio_total += 200
 
         form = PaymentForm()
         return render(request, self.template_name, {'form': form, 'precio_total': precio_total})
@@ -132,6 +136,9 @@ class PaymentView(View):
             us = request.user
             elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
             precio_total = sum(eleccion.get_precio_total() for eleccion in elecciones)
+
+            if precio_total < 25000:
+                precio_total += 200
 
             api_data = {
                 'card_number': form.cleaned_data['card_number'],
