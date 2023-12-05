@@ -32,7 +32,10 @@ INSTALLED_APPS = [
     'opiniones.apps.OpinionesConfig',
     'rest_framework',
     'user',
+
 ]
+
+
 
 
 MIDDLEWARE = [
