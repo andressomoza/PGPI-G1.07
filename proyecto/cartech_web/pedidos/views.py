@@ -52,10 +52,13 @@ def listar_pedidos(request):
     pedidos = Pedido.objects.all()
     if status:
         pedidos = pedidos.filter(status=status)
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
 
     context = {
         'pedidos': pedidos,
         'status': status,
+        'elecciones': elecciones
     }
     return render(request, 'listar_pedidos.html', context)
 
@@ -68,10 +71,14 @@ def buscar_pedido(request):
             precio_total = 0
             for eleccion in elecciones:
                 precio_total+= eleccion.get_precio_total()
+            
+            usuario = request.user.id
+            elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
             context = {
                 'pedido': pedido,
                 'elecciones': elecciones,
                 'precio_total':precio_total,
+                'elecciones': elecciones
             }
             return render(request, 'detalle_pedido.html', context)
         else:
@@ -82,8 +89,11 @@ def buscar_pedido(request):
 def mis_pedidos(request):
     pedidos = Pedido.objects.filter(usuario = request.user)
 
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
     context = {
         'pedidos': pedidos,
+        'elecciones': elecciones
     }
 
     return render(request, 'mis_pedidos.html', context)

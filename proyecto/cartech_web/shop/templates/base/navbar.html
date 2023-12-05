@@ -22,6 +22,7 @@
                     <div class="site-top-icons">
                         <ul>
                             {% if user.is_authenticated %}
+                                <li><a href="{% url 'user_update' %}"><span class="icon icon-person"></span> Mi Perfil</a></li>
                                 <li><a href="{% url 'salir' %}"><span class="icon icon-person"></span> Cerrar Sesión</a></li>
                             {% else %}
                                 <li><a href="{% url 'login' %}"><span class="icon icon-person"></span> Iniciar Sesión</a></li>

@@ -6,9 +6,12 @@ from .models import Incidencia
 from django.contrib.auth.decorators import user_passes_test
 from cartech_web.views import is_admin
 from django.http import HttpResponseRedirect
+from shop.models import Eleccion
 
 def pagina_base(request):
-    return render(request, 'base.html')
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+    return render(request, 'base.html', {'elecciones': elecciones})
 
 def crear_incidencia(request):
     if request.method == 'POST':
@@ -21,7 +24,10 @@ def crear_incidencia(request):
     else:
         form = IncidenciaForm()
 
-    return render(request, 'crear_incidencia.html', {'form': form})
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+
+    return render(request, 'crear_incidencia.html', {'form': form, 'elecciones': elecciones})
 
 def crear_incidencia_pedido(request, id_pedido):
     if request.method == 'POST':
@@ -46,11 +52,15 @@ def listar_incidencias(request):
     if urgencia:
         incidencias = incidencias.filter(urgencia=urgencia)
 
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+
     context = {
         'incidencias': incidencias,
         'urgencia': urgencia,
-
+        'elecciones': elecciones
     }
+    
 
     return render(request, 'listar_incidencias.html', context)
 
@@ -67,9 +77,12 @@ def borrar_incidencia(request, id):
 def mis_incidencias(request):
     
     incidencias = Incidencia.objects.filter(usuario = request.user)
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
 
     context = {
         'incidencias': incidencias,
+        'elecciones': elecciones
 
     }
 

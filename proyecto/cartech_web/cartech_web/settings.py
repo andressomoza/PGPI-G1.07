@@ -55,6 +55,8 @@ LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'user.User'
 
+PASSWORD_CHANGE_TEMPLATE = 'password.html'
+
 
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 

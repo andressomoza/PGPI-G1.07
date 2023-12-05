@@ -8,16 +8,24 @@ from django.contrib.auth.decorators import user_passes_test
 from cartech_web.views import is_admin
 
 def home(request):
-    return render(request,'home.html')
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+    return render(request,'home.html', {'elecciones': elecciones})
 
 def about(request):
-    return render(request, 'about/about.html')
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+    return render(request, 'about/about.html', {'elecciones': elecciones})
 
 def contact(request):
-    return render(request, 'contact/contact.html')
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+    return render(request, 'contact/contact.html', {'elecciones': elecciones})
 
 def selector(request):
-    return render(request,'coches/selector.html')
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+    return render(request,'coches/selector.html', {'elecciones': elecciones})
 
 @user_passes_test(is_admin)
 def crear_accesorio(request):
@@ -151,7 +159,7 @@ def listado_coches(request):
 
     usuario = request.user.id
     elecciones = Eleccion.objects.all()
-    elecciones = elecciones.filter(usuario_id=usuario).values()
+    elecciones = elecciones.filter(usuario_id=usuario, comprado=False)
         
     context = {
         'coches': coches,
@@ -191,6 +199,10 @@ def listado_electricos(request):
         coches = coches.filter(consumo__lte = consumo)
     if caballos:
         coches = coches.filter(caballos__lte =caballos)
+
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+
     context = {
         'coches': coches,
         'marca': marca,
@@ -200,6 +212,7 @@ def listado_electricos(request):
         'conduccion': tipo_conduccion,
         'caballos': caballos,
         'consumo': consumo,
+        'elecciones': elecciones
     }
 
     return render(request, 'coches/listar_electricos.html', context)
@@ -227,6 +240,10 @@ def listado_hibridos(request):
         coches = coches.filter(consumo__lte = consumo)
     if caballos:
         coches = coches.filter(caballos__lte =caballos)
+
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+
     context = {
         'coches': coches,
         'marca': marca,
@@ -236,6 +253,7 @@ def listado_hibridos(request):
         'conduccion': tipo_conduccion,
         'caballos': caballos,
         'consumo': consumo,
+        'elecciones': elecciones
     }
 
     return render(request, 'coches/listar_hibridos.html', context)
@@ -266,6 +284,9 @@ def listado_combustible(request):
         coches = coches.filter(consumo__lte = consumo)
     if caballos:
         coches = coches.filter(caballos__lte =caballos)
+
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
     context = {
         'coches': coches,
         'marca': marca,
@@ -276,6 +297,7 @@ def listado_combustible(request):
         'conduccion': tipo_conduccion,
         'caballos': caballos,
         'consumo': consumo,
+        'elecciones': elecciones
     }
 
     return render(request, 'coches/listar_combustible.html', context)

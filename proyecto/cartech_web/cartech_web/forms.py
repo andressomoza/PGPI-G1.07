@@ -1,17 +1,23 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+
 from user.models import User
 from .choices import MetodoPago
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
 
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
-    direccion = forms.CharField(max_length=255)
-    ciudad = forms.CharField(max_length=100)
-    codigo_postal = forms.CharField(max_length=10)
-    metodo_pago = forms.ChoiceField(choices=MetodoPago.choices)
+    direccion = forms.CharField(max_length=255, required=False)
+    ciudad = forms.CharField(max_length=100, required=False)
+    codigo_postal = forms.CharField(max_length=10, required=False)
+    metodo_pago = forms.ChoiceField(choices=MetodoPago.choices_with_empty_option, required=False)
     
 
 
@@ -32,3 +38,11 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class CustomUserUpdateForm(UserChangeForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'direccion', 'ciudad', 'codigo_postal', 'metodo_pago')
