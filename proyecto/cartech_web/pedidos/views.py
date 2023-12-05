@@ -56,10 +56,10 @@ def detalle_pedido(request, id):
     pedido = get_object_or_404(Pedido, id=id)
     print("pedido: ")
     print(pedido.id)
-    elecciones = Eleccion.objects.all()
+    elecciones = Eleccion.objects.filter(pedido=pedido.id)
     print("HOLA")
     for eleccion in elecciones:
-        print(eleccion.pedido)
+        print(eleccion.pedido.id)
 
     precio_total = 0
     for eleccion in elecciones:

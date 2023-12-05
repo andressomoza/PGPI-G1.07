@@ -142,7 +142,7 @@ class PaymentView(View):
             
             print("RESPONSE:")
             print(response.get('status'))
-            if response.get('status') == status.HTTP_200_OK:
+            if response.get('status'):
                 pedido = Pedido.objects.create(usuario=usuario)
                 pedido.nombre = form.cleaned_data['nombre']
                 pedido.apellidos = form.cleaned_data['apellidos']
