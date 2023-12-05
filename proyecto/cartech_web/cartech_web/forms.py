@@ -8,10 +8,10 @@ class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
-    direccion = forms.CharField(max_length=255)
-    ciudad = forms.CharField(max_length=100)
-    codigo_postal = forms.CharField(max_length=10)
-    metodo_pago = forms.ChoiceField(choices=MetodoPago.choices)
+    direccion = forms.CharField(max_length=255, required=False)
+    ciudad = forms.CharField(max_length=100, required=False)
+    codigo_postal = forms.CharField(max_length=10, required=False)
+    metodo_pago = forms.ChoiceField(choices=MetodoPago.choices_with_empty_option, required=False)
     
 
 

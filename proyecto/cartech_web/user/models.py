@@ -21,10 +21,10 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     
     email = models.EmailField(unique=True)
-    direccion = models.CharField(max_length=255, null=True)
-    ciudad = models.CharField(max_length=100, null=True)
-    codigo_postal = models.CharField(max_length=10, null=True)
-    metodo_pago = models.CharField(max_length=20, choices=MetodoPago.choices, default=MetodoPago.CONTRA_REEMBOLSO)
+    direccion = models.CharField(max_length=255, null=True, blank=True)
+    ciudad = models.CharField(max_length=100, null=True, blank=True)
+    codigo_postal = models.CharField(max_length=10, null=True, blank=True)
+    metodo_pago = models.CharField(max_length=20, choices=MetodoPago.choices, default=MetodoPago.CONTRA_REEMBOLSO, blank=True)
     
     # Otros campos y métodos personalizados
 

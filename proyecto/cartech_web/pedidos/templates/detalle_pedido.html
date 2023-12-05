@@ -50,7 +50,16 @@
                   {% endif %}
 
                   <hr class="my-3">
-                  <p class="card-text font-weight-bold">Precio total: {{ eleccion.get_precio_total }}€</p>
+                  <p class="card-text font-weight-bold">
+                    Precio total: 
+                    {% if eleccion.get_precio_total < 25000 %}
+                        {% with gastos_envio=200 %}
+                            {{ eleccion.get_precio_total|add:gastos_envio }}€ (con gastos de envío)
+                        {% endwith %}
+                    {% else %}
+                        {{ eleccion.get_precio_total }}€
+                    {% endif %}
+                </p>
                 </div>
               </div>
             </div>
@@ -61,18 +70,32 @@
 
     <div class="row mt-4">
       <div class="col-md-6">
-        <h4 class="font-weight-bold">Detalles del Pedido</h4>
-        <p class="font-weight-bold">Estado del Pedido: {{ pedido.status }}</p>
-        <p class="font-weight-bold text-danger">Precio Total del Pedido: {{ precio_total }}€</p>
+          <h4 class="font-weight-bold">Detalles del Pedido</h4>
+          <p class="font-weight-bold">Estado del Pedido: {{ pedido.status }}</p>
+          {% if precio_total < 25000 %}
+              {# Añadir gastos de envío si el precio es inferior a 25000 euros #}
+              {% with gastos_envio=200 %}
+                  <p class="font-weight-bold text-danger">Precio Total del Pedido (con gastos de envío): {{ precio_total|add:gastos_envio }}€</p>
+              {% endwith %}
+          {% else %}
+              <p class="font-weight-bold text-danger">Precio Total del Pedido: {{ precio_total }}€</p>
+          {% endif %}
       </div>
-    </div>
-    {% if user.is_authenticated and user.is_staff%}
-    <a href="{% url "pedidos:editar_pedido" pedido.id %}"><button type="button" class="btn btn-primary" name="editar">Editar</button></a>
-    <a href="{% url "pedidos:borrar_pedido" pedido.id %}"><button type="button" class="btn btn-primary" name="editar">Eliminar</button></a>
-
-    {% endif %} 
   </div>
-</div>
+  
+  {% if user.is_authenticated and user.is_staff %}
+      <div class="row mt-2">
+          <div class="col-md-6">
+              <a href="{% url 'pedidos:editar_pedido' pedido.id %}">
+                  <button type="button" class="btn btn-primary" name="editar">Editar</button>
+              </a>
+              <a href="{% url 'pedidos:borrar_pedido' pedido.id %}">
+                  <button type="button" class="btn btn-danger" name="eliminar">Eliminar</button>
+              </a>
+          </div>
+      </div>
+  {% endif %}
+  </div>
 
 <style>
   .card {
