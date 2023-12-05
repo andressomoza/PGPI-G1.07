@@ -47,6 +47,7 @@ class Eleccion(models.Model):
     accesorios = models.ManyToManyField(Accesorio, related_name='elecciones',blank=True)
     cantidad = models.IntegerField(default=1)
     pedido = models.ForeignKey(Pedido, related_name='elecciones', on_delete=models.CASCADE,blank=True, null=True)
+    comprado = models.BooleanField(default=False)
     
     
     def get_precio_total(self):

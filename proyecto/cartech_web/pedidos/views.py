@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from .models import Pedido
+from shop.models import Eleccion
 
 
 def crear_pedido(request):
@@ -53,14 +54,15 @@ def mis_pedidos(request):
 
 def detalle_pedido(request, id):
     pedido = get_object_or_404(Pedido, id=id)
-    coche = pedido.eleccion.coche
-    accesorios = list(pedido.eleccion.accesorios.all())  
-    precio_total = pedido.eleccion.get_precio_total() 
+    print("pedido: ")
+    print(pedido.id)
+    elecciones = Eleccion.objects.all()
+    print("HOLA")
+    for eleccion in elecciones:
+        print(eleccion.pedido)
 
-    context = {
-        'pedido': pedido,
-        'coche': coche,
-        'accesorios': accesorios,
-        'precio_total': precio_total
-    }
-    return render(request, 'detalle_pedido.html', context)
+    precio_total = 0
+    for eleccion in elecciones:
+        precio_total += eleccion.get_precio_total()
+        
+    return render(request, 'detalle_pedido.html', {'elecciones': elecciones, 'precio_total': precio_total, 'pedido': pedido})
