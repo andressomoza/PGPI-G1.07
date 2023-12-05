@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Permission, Group
 from django.db import models
+from cartech_web.choices import MetodoPago
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -18,9 +19,6 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractUser):
-    class MetodoPago(models.TextChoices):
-        CONTRA_REEMBOLSO =  'contra_reembolso', 'Contra reembolso'
-        TARJETA =  'tarjeta', 'Tarjeta'
     
     email = models.EmailField(unique=True)
     direccion = models.CharField(max_length=255, null=True)

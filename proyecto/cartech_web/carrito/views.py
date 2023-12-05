@@ -10,7 +10,7 @@ from .serializers import CardInformationSerializer  # Make sure to import the se
 from django.views import View
 from .forms import PaymentForm, PedidoForm, DatosClienteForm, DatosEnvioForm
 from pedidos.models import Pedido
-from django.contrib.auth.models import User
+from user.models import User
 from django.urls import reverse
 
 
