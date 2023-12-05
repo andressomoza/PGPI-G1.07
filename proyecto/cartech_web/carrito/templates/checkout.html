@@ -49,6 +49,7 @@ Checkout
         </div>
         <div class="col-md-4">
             <form method="post" class="order-form">
+                {% csrf_token %}
                 {{ form|crispy }}
                 <p><input class="btn btn-primary btn-sm btn-block" type="submit" value="Realizar Pedido"></p>
             </form>
