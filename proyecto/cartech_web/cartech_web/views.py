@@ -5,6 +5,7 @@ from django.contrib.auth import logout, login
 from .forms import CustomUserCreationForm
 
 
+
 def is_admin(user):
     return user.is_authenticated and user.is_staff
 # Create your views here.

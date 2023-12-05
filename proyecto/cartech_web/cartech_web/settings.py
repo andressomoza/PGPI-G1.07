@@ -28,8 +28,10 @@ INSTALLED_APPS = [
     'pedidos.apps.PedidosConfig',
     'carrito.apps.CarritoConfig',
     'opiniones.apps.OpinionesConfig',
-    'rest_framework'
+    'rest_framework',
+    'user',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -42,6 +44,12 @@ MIDDLEWARE = [
 ]
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+AUTH_USER_MODEL = 'user.User'
+
+
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 ROOT_URLCONF = 'cartech_web.urls'
 
