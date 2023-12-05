@@ -62,7 +62,7 @@ Carrito
                                             </div>
                                         </td>
                                         <td>{{ eleccion.get_precio_total }} €</td>
-                                        <td><a href="{% url 'carrito:delete' eleccion.id %}" class="btn btn-primary btn-sm">X</a></td>
+                                        <td><a href="{% url 'carrito:limpiar' eleccion.id %}" class="btn btn-primary btn-sm">X</a></td>
                                     </tr>
                                 {% endwith %}
                             {% endfor %}

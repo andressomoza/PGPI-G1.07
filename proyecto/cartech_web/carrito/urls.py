@@ -11,5 +11,6 @@ urlpatterns = [
     path('make_payment/', PaymentView.as_view(), name='make_payment'),
     path('add/<int:eleccion_id>', views.add, name='add'),
     path('delete/<int:eleccion_id>', views.delete, name='delete'),
+    path('limpiar/<int:eleccion_id>', views.limpiar, name='limpiar'),
     path('checkout/', views.checkout, name="checkout")
 ]

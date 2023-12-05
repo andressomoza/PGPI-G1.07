@@ -75,14 +75,15 @@ def add(request, eleccion_id):
     eleccion = get_object_or_404(Eleccion, id=eleccion_id)
 
     print(eleccion)
-    eleccion.cantidad += 1
-    eleccion.save()
+    if eleccion.coche.stock > eleccion.cantidad:
+        eleccion.cantidad += 1
+        eleccion.save()
 
     usuario = request.user.id
     elecciones = Eleccion.objects.all()
     elecciones = elecciones.filter(usuario_id=usuario)
 
-    return render(request, 'listar_carrito.html', {'elecciones': elecciones})
+    return redirect('carrito:listar_carrito')
 
 def delete(request, eleccion_id):
     eleccion = get_object_or_404(Eleccion, id=eleccion_id)
@@ -98,8 +99,16 @@ def delete(request, eleccion_id):
     elecciones = Eleccion.objects.all()
     elecciones = elecciones.filter(usuario_id=usuario)
     
-    return render(request, 'listar_carrito.html', {'elecciones': elecciones})
+    return redirect('carrito:listar_carrito')
 
+def limpiar(request, eleccion_id):
+    eleccion = get_object_or_404(Eleccion, id=eleccion_id)
+    eleccion.delete()
+
+    usuario = request.user.id
+    elecciones = Eleccion.objects.all()
+    elecciones = elecciones.filter(usuario_id=usuario)
+    return redirect('carrito:listar_carrito')
 
 def checkout(request):
     usuario = request.user
@@ -128,6 +137,10 @@ def checkout(request):
                 for eleccion in elecciones:
                     eleccion.comprado = True
                     eleccion.pedido = pedido
+                    coche = Coche.objects.filter(id=eleccion.coche.id)
+                    coche = coche.get()
+                    coche.stock = coche.stock - eleccion.cantidad
+                    coche.save()
                     eleccion.save()
                 pedido.save()
                 
