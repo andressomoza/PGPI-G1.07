@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import logout, login, authenticate
 from .forms import CustomUserCreationForm
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from user.models import User
@@ -66,6 +66,16 @@ def create_default_user(request):
         login(request, user)
     
     return redirect('/')  
+
+@login_required
+def user_list(request):
+    users = User.objects.all()
+    return render(request, 'admin/user_list.html', {'users': users})
+
+class UserDeleteView(LoginRequiredMixin, DeleteView):
+    model = User
+    template_name = 'admin/user_confirm_delete.html'
+    success_url = reverse_lazy('user_list')
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User

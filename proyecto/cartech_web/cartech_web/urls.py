@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from .views import UserUpdateView, internal_server_error, not_found, forbidden, bad_request
+from .views import UserUpdateView, UserDeleteView, user_list
 from django.conf.urls import handler400, handler403, handler404, handler500
 from django.contrib.auth import views as auth_views
 
@@ -18,6 +18,9 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('annonymous/', views.create_default_user, name='create_default_user'),
     path('carrito/', include('carrito.urls', namespace='carrito')),
+    path('user_list/', user_list, name='user_list'),
+    path('user_update/<int:pk>/', UserUpdateView.as_view(), name='user_update_admin'),
+    path('user_delete/<int:pk>/', UserDeleteView.as_view(), name='user_delete'),
     path('update/', UserUpdateView.as_view(), name='user_update'),
     path('cambiar-contrasena/', auth_views.PasswordChangeView.as_view(), name='cambiar-contrasena'),
     
