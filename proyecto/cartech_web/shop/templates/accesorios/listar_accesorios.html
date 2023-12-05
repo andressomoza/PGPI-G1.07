@@ -63,8 +63,8 @@
                                     {% endif %}
                                     <br/>
                                     <h3><a href="{{ accesorio.get_absolute_url }}">{{accesorio.nombre}}</a></h3>
-                                    <p class="mb-0">Precio: {{ accesorio.precio }}</p>
-                                    <p class="text-primary font-weight-bold">Stock: {{ accesorio.stock }}€</p>
+                                    <p class="mb-0">Stock: {{ accesorio.stock }}</p>
+                                    <p class="text-primary font-weight-bold">Precio: {{ accesorio.precio }}€</p>
                                     {% if accesorio.stock == 0 %}
                                         <p class="text-danger">¡Producto Agotado!</p>
                                     {% endif %}
