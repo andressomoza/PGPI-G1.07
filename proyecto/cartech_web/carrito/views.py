@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from shop.models import Eleccion, Coche, Accesorio, DireccionUsuario
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect 
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from rest_framework.views import APIView
@@ -11,6 +11,7 @@ from django.views import View
 from .forms import PaymentForm, PedidoForm, DatosClienteForm, DatosEnvioForm
 from pedidos.models import Pedido
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 import stripe
@@ -24,9 +25,10 @@ def home(request):
 def listar_carrito(request):
     usuario = request.user.id
     elecciones = Eleccion.objects.all()
-    elecciones = elecciones.filter(usuario_id=usuario)
+    elecciones = elecciones.filter(usuario_id=usuario, comprado=False)
     precio_total = 0 
     for eleccion in elecciones:
+        print(eleccion.comprado)
         precio_total += eleccion.get_precio_total()
 
 
@@ -64,35 +66,36 @@ def delete(request, eleccion_id):
 
 def checkout(request):
     usuario = request.user
-    todos = User.objects.all()
-    print(todos)
     elecciones = Eleccion.objects.filter(usuario=usuario)
-    direccion, created = DireccionUsuario.objects.get_or_create(usuario=usuario)
     detalles_usuario = User.objects.get(username=usuario)
-    pedido = Pedido.objects.create(usuario=usuario)
-    print(detalles_usuario)
 
     precio_total = 0
     for eleccion in elecciones:
         precio_total += eleccion.get_precio_total()
     
+    print(request.method)
     if request.method == 'POST':
         form = PedidoForm(request.POST)
         if form.is_valid():
-            # Procesar el formulario y guardar los cambios en la dirección
-            pedido.nombre = form.cleaned_data['nombre']
-            pedido.apellidos = form.cleaned_data['apellidos']
-            pedido.email = form.cleaned_data['email']
-            pedido.direccion = form.cleaned_data['direccion']
-            pedido.ciudad = form.cleaned_data['ciudad']
-            pedido.codigo_postal = form.cleaned_data['codigo_postal']
-            pedido.metodo_pago = form.cleaned_data['metodo_pago']
 
-            if pedido.metodo_pago == 'contrareembolso':
+            if form.cleaned_data['metodo_pago'] == 'contra_reembolso':
+                pedido = Pedido.objects.create(usuario=usuario)
+                pedido.nombre = form.cleaned_data['nombre']
+                pedido.apellidos = form.cleaned_data['apellidos']
+                pedido.email = form.cleaned_data['email']
+                pedido.direccion = form.cleaned_data['direccion']
+                pedido.ciudad = form.cleaned_data['ciudad']
+                pedido.codigo_postal = form.cleaned_data['codigo_postal']
+                pedido.metodo_pago = form.cleaned_data['metodo_pago']
+                print(pedido.metodo_pago)
+                for eleccion in elecciones:
+                    eleccion.comprado = True
+                    eleccion.pedido = pedido
+                    eleccion.save()
                 pedido.save()
-                return redirect('página de confirmación')
+                return HttpResponseRedirect(reverse('pedidos:detalle_pedido', args=[pedido.id]))
             else:
-                return HttpResponseRedirect('/carrito/make_payment')  
+                return HttpResponseRedirect('/carrito/make_payment')
 
             
     else:
@@ -197,4 +200,3 @@ class PaymentView(View):
             }
 
         return response
-
