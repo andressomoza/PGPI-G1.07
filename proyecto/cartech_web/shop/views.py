@@ -282,6 +282,10 @@ def listado_combustible(request):
 
 def detalles_coche(request, id):
     coche = get_object_or_404(Coche, id=id)
+    elecciones_coche = Eleccion.objects.filter(coche = coche)
+    opiniones = []
+    for eleccion in elecciones_coche:
+        opiniones.append(eleccion.opinion)
     accesorios_disponibles = Accesorio.objects.all()
     alerta = None
     accesorios_seleccionados = []
@@ -310,13 +314,13 @@ def detalles_coche(request, id):
                 eleccion.save()
                 eleccion.accesorios.set(accesorios_comprar)
                 return HttpResponseRedirect('/')
-        
 
     precio_total = coche.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
     context = {
         'coche': coche,
         'alerta':alerta,
         'cantidad':cantidad,
+        'opiniones':opiniones,
         'accesorios_disponibles': accesorios_disponibles,
         'accesorios_seleccionados': accesorios_seleccionados,
         'precio_total': precio_total,

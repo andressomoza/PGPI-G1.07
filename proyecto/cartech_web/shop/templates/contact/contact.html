@@ -1,48 +1,50 @@
 {% extends "base/base.html" %}
 {% load static %}
-{% load crispy_forms_tags %} 
+{% load crispy_forms_tags %}
 {% block content %}
 
 
-  <div class="site-section site-section-sm site-blocks-1">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="">
-          <div class="icon mr-4 align-self-start">
-            <span class="icon-map-marker"></span>
-          </div>
-          <div class="text">
-            <h2 class="text-uppercase">Dirección</h2>
-            <p>Calle Camino de la Pañoleta, 55,<br>La Carlota, Córdoba, España</p>
-          </div>
+<div class="site-section site-section-sm site-blocks-1">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="">
+        <div class="icon mr-4 align-self-start">
+          <span class="icon-map-marker"></span>
         </div>
-        <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="icon mr-4 align-self-start">
-            <span class="icon-phone"></span>
-          </div>
-          <div class="text">
-            <h2 class="text-uppercase">Teléfono</h2>
-            <p><a href="tel://+34955162485">+34 955162485</a></p>
-          </div>
+        <div class="text">
+          <h2 class="text-uppercase">Dirección</h2>
+          <p>Calle Camino de la Pañoleta, 55,<br>La Carlota, Córdoba, España</p>
         </div>
-        <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="icon mr-4 align-self-start">
-            <span class="icon-envelope"></span>
-          </div>
-          <div class="text">
-            <h2 class="text-uppercase">Correo Electrónico</h2>
-            <p><a href="mailto:info@cartechweb.com">info@cartechweb.com</a></p>
-          </div>
+      </div>
+      <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="icon mr-4 align-self-start">
+          <span class="icon-phone"></span>
+        </div>
+        <div class="text">
+          <h2 class="text-uppercase">Teléfono</h2>
+          <p><a href="tel://+34955162485">+34 955162485</a></p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="icon mr-4 align-self-start">
+          <span class="icon-envelope"></span>
+        </div>
+        <div class="text">
+          <h2 class="text-uppercase">Correo Electrónico</h2>
+          <p><a href="mailto:info@cartechweb.com">info@cartechweb.com</a></p>
         </div>
       </div>
     </div>
-
-    <div class="row mt-5">
-        <div class="col-md-12 text-center">
-            <p class="mb-3 display-5">¿Tienes algún problema o incidencia? No dudes en informarnos. Pulsa el siguiente botón para ir a la sección de incidencias.</p>
-          <a href="/incidencias/" class="btn btn-primary">Ir a Incidencias</a>
-        </div>
-      </div>
-
   </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12 text-center">
+      <p class="mb-3 display-5">¿Tienes algún problema o incidencia? No dudes en informarnos. Pulsa el siguiente botón
+        para ir a la sección de incidencias.</p>
+        <a href="{% url "incidencias:crear_incidencia" %}" class="btn btn-primary">Crear incidencia sin pedido</a>
+        <a href="{% url "pedidos:buscar_pedido" %}" class="btn btn-primary">Crear incidencia de un pedido</a>
+    </div>
+  </div>
+
+</div>
 {% endblock %}

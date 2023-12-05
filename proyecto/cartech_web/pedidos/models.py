@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import User
+from opiniones.models import Opinion
 from cartech_web.choices import MetodoPago
 import uuid
 

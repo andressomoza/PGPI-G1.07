@@ -1,25 +1,30 @@
 from django.shortcuts import render, redirect ,get_object_or_404
 from .forms import OpinionForm
+from shop.models import Eleccion
 from .models import Opinion
 from django.contrib.auth.decorators import user_passes_test
 from cartech_web.views import is_admin
 from django.http import HttpResponseRedirect
 
 def pagina_base(request):
-    return render(request, 'base.html')
+    return render(request, 'base_opiniones.html')
 
-def crear_opinion(request):
+def crear_opinion(request, id_eleccion):
+    print(id_eleccion)
+    eleccion = get_object_or_404(Eleccion, id = id_eleccion)
     if request.method == 'POST':
         form = OpinionForm(request.POST)
         if form.is_valid():
             opinion = form.save(commit=False)
             opinion.usuario = request.user 
             opinion.save()
+            eleccion.opinion = opinion
+            eleccion.save()
             return HttpResponseRedirect('/opiniones/me')
     else:
         form = OpinionForm()
 
-    return render(request, 'crear_opinion.html', {'form': form})
+    return render(request, 'crear_opinion.html', {'form': form , 'eleccion': eleccion})
 
 @user_passes_test(is_admin)
 def listar_opiniones(request):
@@ -56,3 +61,13 @@ def mis_opiniones(request):
     }
 
     return render(request, 'mis_opiniones.html', context)
+
+def mis_elecciones(request):
+    
+    elecciones = Eleccion.objects.filter(usuario = request.user).filter(comprado=True)
+
+    context = {
+        'elecciones': elecciones,
+    }
+
+    return render(request, 'seleccionar_eleccion.html', context)

@@ -1,8 +1,8 @@
-<!-- incidencias/templates/incidencias/crear_incidencia.html -->
+
 {% extends "base/base.html" %}
 
 {% block content %}
-<!-- Contenido específico de la creación de incidencias -->
+
 <div class="bg-light py-3">
     <div class="container">
         <div class="row">
@@ -22,7 +22,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Crear Opinion</h5>
                         <br/>
-                        <form method="post" action="{% url 'opiniones:crear_opinion' %}" class="needs-validation" novalidate>
+                        <form method="post" action="{% url "opiniones:crear_opinion" eleccion.id%}" class="needs-validation" novalidate>
                             {% csrf_token %}
                             {{ form.as_p }}
                             <button type="submit" class="btn btn-primary">Guardar</button>

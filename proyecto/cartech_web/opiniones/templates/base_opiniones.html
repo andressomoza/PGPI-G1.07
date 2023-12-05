@@ -1,0 +1,34 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4">Opiniones</h2>
+
+  <div class="card-deck">
+    {% if user.is_staff %}
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Listar opiniones</h5>
+          <p class="card-text">Listar todas las opiniones.</p>
+          <a href="{% url 'opiniones:listar_opiniones' %}" class="btn btn-primary">Ver opiniones</a>
+        </div>
+      </div>
+    {% else %}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Ver mis opiniones</h5>
+        <p class="card-text">Lista todas tus opiniones.</p>
+        <a href="{% url 'opiniones:mis_opiniones' %}" class="btn btn-primary">Ver opiniones</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Dejar una reseña</h5>
+        <p class="card-text">Lista todas tus elecciones compradas y deja una reseña de una de ellas.</p>
+        <a href="{% url 'opiniones:mis_elecciones' %}" class="btn btn-primary">Ver elecciones</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

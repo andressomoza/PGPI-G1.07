@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect ,get_object_or_404
+
+from pedidos.models import Pedido
 from .forms import IncidenciaForm
 from .models import Incidencia
 from django.contrib.auth.decorators import user_passes_test
@@ -14,6 +16,21 @@ def crear_incidencia(request):
         if form.is_valid():
             incidencia = form.save(commit=False)
             incidencia.usuario = request.user 
+            incidencia.save()
+            return HttpResponseRedirect('/incidencias/me')
+    else:
+        form = IncidenciaForm()
+
+    return render(request, 'crear_incidencia.html', {'form': form})
+
+def crear_incidencia_pedido(request, id_pedido):
+    if request.method == 'POST':
+        pedido = get_object_or_404(Pedido, id=id_pedido)
+        form = IncidenciaForm(request.POST)
+        if form.is_valid():
+            incidencia = form.save(commit=False)
+            incidencia.usuario = request.user 
+            incidencia.pedido = pedido
             incidencia.save()
             return HttpResponseRedirect('/incidencias/me')
     else:

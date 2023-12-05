@@ -18,13 +18,12 @@
 <div class="site-section">
   <div class="container">
     <div class="row">
-
       <div class="col-md-6">
         <h2 class="text-black mr-2">{{ coche.marca }} {{ coche.modelo }}</h2>
         {% if coche.stock > 0 %}
-          <p class="text-success">¡Disponible en stock!</p>
+        <p class="text-success">¡Disponible en stock!</p>
         {% else %}
-          <p class="text-danger">¡Producto Agotado!</p>
+        <p class="text-danger">¡Producto Agotado!</p>
         {% endif %}
         {% if coche.imagen %}
         <img src="{{ coche.imagen.url }}" alt="{{ coche.marca }}" style="max-width: 100%;">
@@ -51,28 +50,30 @@
         <form id="comprar-form" method="post" class="row">
           {% csrf_token %}
           {% for accesorio in accesorios_seleccionados %}
-            <input type="hidden" name="accesorios_comprar" value="{{ accesorio.id }}">
+          <input type="hidden" name="accesorios_comprar" value="{{ accesorio.id }}">
           {% endfor %}
           <div class="col-12">
             {% if alerta %}
             <div class="alert alert-warning" role="alert">
-            {{ alerta }}
+              {{ alerta }}
             </div>
             {% endif %}
             {% if user.is_authenticated and user.is_staff %}
-              <a href="{% url "shop:editar_coche" coche.id %}"><button type="button" class="btn btn-primary" name="editar">Editar</button></a>
-              <a href="{% url "shop:borrar_coche" coche.id %}"><button type="button" class="btn btn-primary" name="editar">Eliminar</button></a>
+            <a href="{% url " shop:editar_coche" coche.id %}"><button type="button" class="btn btn-primary"
+                name="editar">Editar</button></a>
+            <a href="{% url " shop:borrar_coche" coche.id %}"><button type="button" class="btn btn-primary"
+                name="editar">Eliminar</button></a>
 
             {% else %}
-              {% if coche.stock > 0 %}
-                <label for="cantidad">Cantidad:</label>
-                <input type="number" name="cantidad" id="cantidad" value="1" min="1" max="{{ coche.stock }}">
-                <br>
-                <button type="submit" class="btn btn-primary" name="comprar">Añadir a la cesta</button>
-              {% else %}
-                <button type="button" class="btn btn-secondary" disabled>Producto Agotado</button>
-              {% endif %}
-            {% endif %} 
+            {% if coche.stock > 0 %}
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantidad" id="cantidad" value="1" min="1" max="{{ coche.stock }}">
+            <br>
+            <button type="submit" class="btn btn-primary" name="comprar">Añadir a la cesta</button>
+            {% else %}
+            <button type="button" class="btn btn-secondary" disabled>Producto Agotado</button>
+            {% endif %}
+            {% endif %}
           </div>
         </form>
       </div>
@@ -94,12 +95,12 @@
                 <p>{{ accesorio.nombre }} </p>
                 <p>{{ accesorio.precio }}€ </p>
                 {% if accesorio.stock == 0 %}
-                  <p class="text-danger">¡Producto Agotado!</p>
+                <p class="text-danger">¡Producto Agotado!</p>
                 {% else %}
-                  <label class="d-block">
-                    <input type="checkbox" name="accesorios_seleccionados" value="{{ accesorio.id }}">
-                    Seleccionar
-                  </label>
+                <label class="d-block">
+                  <input type="checkbox" name="accesorios_seleccionados[]" value="{{ accesorio.id }}">
+                  Seleccionar
+                </label>
                 {% endif %}
               </div>
             </div>
@@ -110,14 +111,42 @@
           </div>
         </form>
       </div>
-      {% endif %} 
+      {% endif %}
     </div>
   </div>
 </div>
+<div class="site-section">
+  <div class="container">
+    <div class="col-md-9 order-2">
+      <div class="row mb-5">
+        <h3>Opiniones:</h3>
+        {% for opinion in opiniones %}
+        <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+          <div class="block-4 text-center border">
+            <div class="block-4-text p-4">
+              <p class="mb-0">Usuario: {{ opinion.usuario.first_name }}</p>
+              <p class="mb-0">Descripcion: {{ opinion.descripcion }}</p>
+              <div class="text-primary font-weight-bold">
+                Valoración:
+                {% for i in "12345" %}
+                {% if i|add:0 <= opinion.valoracion %} <i class="fas fa-star"></i>
+                  {% else %}
+                  <i class="far fa-star"></i>
+                  {% endif %}
+                  {% endfor %}
+              </div>
+              {% if user.is_authenticated and user.is_staff %}
+              <a href="{% url " opiniones:borrar_opinion" opinion.id %}">
+                <button type="button" class="btn btn-danger btn-smb" name="eliminar">Eliminar</button>
+              </a>
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 </div>
-
-
-</div>
-
-
 {% endblock %}

@@ -1,9 +1,8 @@
 from django.db import models
 from django.urls import reverse
 from user.models import User
-
 from pedidos.models import Pedido
-
+from opiniones.models import Opinion
 
 class Accesorio(models.Model):
     
@@ -48,7 +47,7 @@ class Eleccion(models.Model):
     cantidad = models.IntegerField(default=1)
     pedido = models.ForeignKey(Pedido, related_name='elecciones', on_delete=models.CASCADE,blank=True, null=True)
     comprado = models.BooleanField(default=False)
-    
+    opinion = models.ForeignKey(Opinion,on_delete=models.DO_NOTHING, blank=True, null=True)
     
     def get_precio_total(self):
         precio_base = self.coche.precio_inicial

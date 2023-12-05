@@ -1,15 +1,41 @@
-
 {% extends "base/base.html" %}
 
 {% block content %}
-  <div class="container">
-    <h2>Gestión de Incidencias</h2>
+<div class="container">
+  <h2 class="mb-4">Gestión de Incidencias</h2>
 
-    <!-- Botón para crear nueva incidencia -->
-    <a href="{% url "incidencias:crear_incidencia" %}" class="btn btn-primary">Crear Nueva Incidencia</a>
+  <div class="card-deck">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Crear incidencia sin pedido</h5>
+        <p class="card-text">Crea una nueva incidencia sin asociarla a un pedido.</p>
+        <a href="{% url 'incidencias:crear_incidencia' %}" class="btn btn-primary">Crear incidencia</a>
+      </div>
+    </div>
 
-    <!-- Botón para listar incidencias -->
-    <a href="{% url "incidencias:listar_incidencias" %}" class="btn btn-success">Listar Incidencias</a>
-    <a href="{% url "incidencias:mis_incidencias" %}" class="btn btn-success">Mis Incidencias</a>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Crear incidencia de un pedido</h5>
+        <p class="card-text">Asocia una nueva incidencia a un pedido existente.</p>
+        <a href="{% url 'pedidos:buscar_pedido' %}" class="btn btn-primary">Crear incidencia</a>
+      </div>
+    </div>
+
+    {% if user.is_authenticated %}
+      <div class="card">
+        <div class="card-body">
+          {% if user.is_staff %}
+            <h5 class="card-title">Listar Incidencias</h5>
+            <p class="card-text">Consulta y gestiona todas las incidencias.</p>
+            <a href="{% url 'incidencias:listar_incidencias' %}" class="btn btn-success">Listar Incidencias</a>
+          {% else %}
+            <h5 class="card-title">Mis Incidencias</h5>
+            <p class="card-text">Consulta y gestiona tus propias incidencias.</p>
+            <a href="{% url 'incidencias:mis_incidencias' %}" class="btn btn-success">Mis Incidencias</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
   </div>
+</div>
 {% endblock %}

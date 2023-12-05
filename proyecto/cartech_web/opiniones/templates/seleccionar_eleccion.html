@@ -8,9 +8,9 @@ Detalles del Pedido
 <div class="bg-light py-3">
   <div class="container">
     <div class="row">
-      {% with base_url="/pedidos/" %}
-      <div class="col-md-12 mb-0"><a href="{{ base_url }}">Pedidos</a> <span class="mx-2 mb-0">/</span> <strong
-          class="text-black">{{ coche.marca }} {{ coche.modelo }}</strong></div>
+      {% with base_url="/opiniones/" %}
+      <div class="col-md-12 mb-0"><a href="{{ base_url }}">Opiniones</a> <span class="mx-2 mb-0">/</span> <strong
+          class="text-black">Elecciones</strong></div>
       {% endwith %}
     </div>
   </div>
@@ -18,14 +18,14 @@ Detalles del Pedido
 
 <div class="site-section">
   <div class="container">
-    <h2 class="font-weight-bold mb-4">Pedido: {{pedido.id_pedido}}</h2>
+    <h2 class="font-weight-bold mb-4">Elecciones disponibles</h2>
 
     <div class="row">
       {% for eleccion in elecciones %}
       <div class="col-md-6 mb-4">
         <div class="card">
           <div class="row g-0">
-            <div class="col-md-10">
+            <div class="col-md-4">
               <img src="{{ eleccion.coche.imagen.url }}" alt="{{ eleccion.coche.nombre }}" class="img-fluid rounded">
             </div>
             <div class="col-md-8">
@@ -52,43 +52,16 @@ Detalles del Pedido
                 <hr class="my-3">
                 <p class="card-text font-weight-bold">
                   Precio total:
-                  {% if eleccion.get_precio_total < 25000 %} {% with gastos_envio=200 %} {{ eleccion.get_precio_total|add:gastos_envio }}€ (con gastos de envío) {% endwith %} {% else %} {{ eleccion.get_precio_total }}€ {% endif %} </p>
-              </div>
+                  {% if eleccion.get_precio_total < 25000 %} {% with gastos_envio=200 %} {{ eleccion.get_precio_total|add:gastos_envio }}€ (con gastos de envío) {% endwith %} {% else %} {{eleccion.get_precio_total }}€ {% endif %} </p>
+                <a href="{% url 'opiniones:crear_opinion' eleccion.id %}">
+                    <button type="button" class="btn btn-warning" name="opinar">Dejar una reseña</button>
+                </a>
+                </div>
             </div>
           </div>
         </div>
       </div>
       {% endfor %}
-    </div>
-
-    <div class="row mt-4">
-      <div class="col-md-6">
-        <h4 class="font-weight-bold">Detalles del Pedido</h4>
-        <p class="font-weight-bold">Estado del Pedido: {{ pedido.status }}</p>
-        {% if precio_total < 25000 %} {# Añadir gastos de envío si el precio es inferior a 25000 euros #} 
-          {% with gastos_envio=200 %} 
-            <p class="font-weight-bold text-danger">Precio Total del Pedido (con gastos de envío): {{precio_total|add:gastos_envio }}€</p>
-          {% endwith %}
-        {% else %}
-          <p class="font-weight-bold text-danger">Precio Total del Pedido: {{ precio_total }}€</p>
-        {% endif %}
-      </div>
-    </div>
-
-    <div class="row mt-2">
-      <div class="col-md-6">
-        {% if user.is_authenticated and user.is_staff %}
-          <a href="{% url 'pedidos:editar_pedido' pedido.id %}">
-            <button type="button" class="btn btn-primary" name="editar">Editar</button>
-          </a>
-          <a href="{% url 'pedidos:borrar_pedido' pedido.id %}">
-            <button type="button" class="btn btn-danger" name="eliminar">Eliminar</button>
-          </a>
-        {% endif %}
-        <a href="{% url 'incidencias:crear_incidencia_pedido' pedido.id %}">
-          <button type="button" class="btn btn-danger" name="eliminar">Crear incidencia</button>
-        </a>
-      </div>
     </div>
   </div>
 
