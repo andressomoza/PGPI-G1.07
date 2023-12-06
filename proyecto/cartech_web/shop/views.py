@@ -1,11 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from .models import  Coche, Accesorio, Eleccion
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.db.models import Count
 from .forms import CocheForm, AccesorioForm
 from django.contrib.auth.decorators import user_passes_test
 from cartech_web.views import is_admin
+from django.db.models import Sum, Count, F,  ExpressionWrapper, DecimalField,fields
+from django.db import models
+from pedidos.models import Pedido
 
 def home(request):
     usuario = request.user.id
@@ -348,3 +351,104 @@ def detalles_coche(request, id):
         'precio_total': precio_total,
     }
     return render(request, 'coches/detail.html', context)
+
+
+def estadisticas_base(request):
+    return render(request, 'estadisticas/base_estadisticas.html')
+
+
+def estadisticas_coches(request):
+    # Cantidad de coches vendidos
+    coches_vendidos = Eleccion.objects.filter(comprado=True).aggregate(total_coches_vendidos=Sum('cantidad'))['total_coches_vendidos'] or 0
+
+
+    # Coches más vendidos
+    coches_mas_vendidos_ids = Eleccion.objects.values('coche__id').annotate(cantidad_vendida=Count('coche__id')).order_by('-cantidad_vendida')[:3]
+    coches_mas_vendidos = Coche.objects.filter(id__in=[coche_stat['coche__id'] for coche_stat in coches_mas_vendidos_ids])
+    cant_coches_vendidos={}
+    for coche in coches_mas_vendidos:
+        elecciones = Eleccion.objects.filter(coche = coche).all()
+        num = 0
+        for eleccion in elecciones: 
+            num += eleccion.cantidad
+        cant_coches_vendidos[coche]=num
+
+    # Dinero total recibido (solo por el coche, sin contar accesorios)
+    dinero_total_recibido_por_coches = Eleccion.objects.filter(comprado=True).aggregate(
+        total_dinero=Sum(F('cantidad') * F('coche__precio_inicial'), output_field=models.IntegerField())
+        )['total_dinero'] or 0
+
+
+    # Combustible más vendido
+    combustible_mas_vendido = Eleccion.objects.filter(comprado=True).values('coche__combustible').annotate(cantidad_vendida=Count('coche__combustible')).order_by('-cantidad_vendida').first()
+
+
+    # Datos para el gráfico de pastel - Tipos de Combustible
+    tipos_combustible = Coche.Combustible.choices
+    labels_combustible = [choice[1] for choice in tipos_combustible]
+    data_combustible = [Eleccion.objects.filter(comprado=True, coche__combustible=choice[0]).count() for choice in tipos_combustible]
+
+    # Datos para el gráfico de pastel - Tipo de Conducción
+    tipos_conduccion = Coche.Conduccion.choices
+    labels_conduccion = [choice[1] for choice in tipos_conduccion]
+    data_conduccion = [Eleccion.objects.filter(comprado=True, coche__conduccion=choice[0]).count() for choice in tipos_conduccion]
+
+    # Cantidad total de pedidos
+    total_pedidos = Eleccion.objects.filter(comprado=True).count()
+
+    # Dinero total recaudado (sin contar accesorios)
+    dinero_total_exp = ExpressionWrapper(
+        F('coche__precio_inicial') + F('accesorios__precio') * F('cantidad'),
+        output_field=DecimalField(),
+    )
+    dinero_total_recaudado = Eleccion.objects.filter(comprado=True).aggregate(total_recaudado=Sum(dinero_total_exp))['total_recaudado'] or 0
+
+
+    context = {
+        'cant_coches_vendidos': cant_coches_vendidos,
+        'coches_vendidos': coches_vendidos,
+        'dinero_total_recibido_por_coches': dinero_total_recibido_por_coches,
+        'combustible_mas_vendido': combustible_mas_vendido,
+        'labels_combustible': labels_combustible,
+        'data_combustible': data_combustible,
+        'labels_conduccion': labels_conduccion,
+        'data_conduccion': data_conduccion,
+        'total_pedidos': total_pedidos,
+        'dinero_total_recaudado': dinero_total_recaudado,
+    }
+
+    return render(request, 'estadisticas/estadisticas_coches.html', context)
+
+def estadisticas_accesorios(request):
+    
+    numero_accesorios_vendidos = Eleccion.objects.filter(comprado=True).aggregate(total_accesorios_vendidos=Sum('cantidad'))['total_accesorios_vendidos'] or 0
+    
+    dinero_por_accesorio = ExpressionWrapper(
+        F('accesorios__precio') * F('cantidad'),
+        output_field=fields.DecimalField(),
+    )
+
+    # Calcular el dinero total ganado con accesorios sumando la expresión anterior
+    dinero_ganado_accesorios = Eleccion.objects.filter(comprado=True).aggregate(
+        total_dinero_accesorios=Sum(dinero_por_accesorio)
+    )['total_dinero_accesorios'] or 0
+    
+    
+    accesorios_mas_vendidos = Accesorio.objects.annotate(cantidad_vendida=Sum('elecciones__cantidad')).order_by('-cantidad_vendida')[:3]
+
+    cant_accesorios_vendidos={}
+    for accesorio in accesorios_mas_vendidos:
+        elecciones = Eleccion.objects.filter(accesorios__in=[accesorio]).all()
+
+        num = sum(eleccion.cantidad for eleccion in elecciones)
+    
+        cant_accesorios_vendidos[accesorio]=num
+        
+    context = {
+        'numero_accesorios_vendidos': numero_accesorios_vendidos,
+        'dinero_ganado_accesorios': dinero_ganado_accesorios,
+        'cant_accesorios_vendidos': cant_accesorios_vendidos,
+    }
+
+    print(context)
+    return render(request, 'estadisticas/estadisticas_accesorios.html',context)

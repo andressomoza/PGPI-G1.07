@@ -1,0 +1,124 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Estadísticas de Coches</h1>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>Los 3 coches más vendidos</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for key, value in cant_coches_vendidos.items %}
+                            <li class="list-group-item">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ key.imagen.url }}" alt="{{ key.modelo }}" class="img-thumbnail mr-3" style="max-width: 100px;">
+                                    <div>
+                                        <h5 class="mb-1">{{ key.marca }} {{ key.modelo }}</h5>
+                                        <p class="mb-0">Cantidad vendida: {{ value }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h2>Estadísticas Generales</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>Has vendido:</strong> {{ coches_vendidos }}<strong> coches</strong></p>
+                    <p><strong>Por los que has recibido:</strong> {{ dinero_total_recibido_por_coches }}€</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h2>Pedidos</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>Se han realizado:</strong> {{ total_pedidos }}<strong> pedidos</strong></p>
+                    <p><strong>Con los que has recaudado:</strong> {{ dinero_total_recaudado }}€</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h2>Combustible más popular</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="combustibleChart" width="400" height="400"></canvas>
+                    <script>
+                        // Código JavaScript para inicializar el gráfico de pastel
+                        var ctxCombustible = document.getElementById('combustibleChart').getContext('2d');
+                        var dataCombustible = {
+                            labels: {{ labels_combustible|safe }},
+                            datasets: [{
+                                data: {{ data_combustible|safe }},
+                                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50'],
+                                hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50']
+                            }]
+                        };
+                        var optionsCombustible = {
+                            responsive: true
+                        };
+                        new Chart(ctxCombustible, {
+                            type: 'pie',
+                            data: dataCombustible,
+                            options: optionsCombustible
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h2>Conducción elegida</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="conduccionChart" width="400" height="400"></canvas>
+                    <script>
+                        // Código JavaScript para inicializar el gráfico de pastel
+                        var ctxConduccion = document.getElementById('conduccionChart').getContext('2d');
+                        var dataConduccion = {
+                            labels: {{ labels_conduccion|safe }},
+                            datasets: [{
+                                data: {{ data_conduccion|safe }},
+                                backgroundColor: ['#FF6384', '#36A2EB'],
+                                hoverBackgroundColor: ['#FF6384', '#36A2EB']
+                            }]
+                        };
+                        var optionsConduccion = {
+                            responsive: true
+                        };
+                        new Chart(ctxConduccion, {
+                            type: 'pie',
+                            data: dataConduccion,
+                            options: optionsConduccion
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

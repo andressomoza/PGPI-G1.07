@@ -1,0 +1,26 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Estadísticas</h2>
+
+    <div class="card-deck">
+        {% if user.is_staff %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Coches</h5>
+                <p class="card-text">Analiza todas las estadísticas de venta de coches</p>
+                <a href="{% url 'shop:estadisticas_coches' %}" class="btn btn-primary">Ver</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Accesorios</h5>
+                <p class="card-text">Analiza todas las estadísticas de venta de accesorios</p>
+                <a href="{% url 'shop:estadisticas_accesorios' %}" class="btn btn-primary">Ver</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
