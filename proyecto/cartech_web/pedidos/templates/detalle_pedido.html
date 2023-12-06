@@ -52,7 +52,13 @@ Detalles del Pedido
                 <hr class="my-3">
                 <p class="card-text font-weight-bold">
                   Precio total:
-                  {% if eleccion.get_precio_total < 25000 %} {% with gastos_envio=200 %} {{ eleccion.get_precio_total|add:gastos_envio }}€ (con gastos de envío) {% endwith %} {% else %} {{ eleccion.get_precio_total }}€ {% endif %} </p>
+                  {% if precio_total < 25000 %} 
+                  {% with gastos_envio=200 %} 
+                  {{ eleccion.get_precio_total|add:gastos_envio }}€ (con gastos de envío) 
+                  {% endwith %} 
+                  {% else %} 
+                  {{ eleccion.get_precio_total }}€ 
+                  {% endif %} </p>
               </div>
             </div>
           </div>

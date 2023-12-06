@@ -338,7 +338,7 @@ def detalles_coche(request, id):
                 eleccion = Eleccion(coche=coche, usuario = request.user, cantidad = cantidad)
                 eleccion.save()
                 eleccion.accesorios.set(accesorios_comprar)
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/carrito/')
 
     precio_total = coche.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
     context = {
@@ -352,11 +352,11 @@ def detalles_coche(request, id):
     }
     return render(request, 'coches/detail.html', context)
 
-
+@user_passes_test(is_admin)
 def estadisticas_base(request):
     return render(request, 'estadisticas/base_estadisticas.html')
 
-
+@user_passes_test(is_admin)
 def estadisticas_coches(request):
     # Cantidad de coches vendidos
     coches_vendidos = Eleccion.objects.filter(comprado=True).aggregate(total_coches_vendidos=Sum('cantidad'))['total_coches_vendidos'] or 0
@@ -394,11 +394,15 @@ def estadisticas_coches(request):
     data_conduccion = [Eleccion.objects.filter(comprado=True, coche__conduccion=choice[0]).count() for choice in tipos_conduccion]
 
     # Cantidad total de pedidos
-    total_pedidos = Eleccion.objects.filter(comprado=True).count()
-
-    # Dinero total recaudado (sin contar accesorios)
+    elecciones = Eleccion.objects.filter(comprado=True) 
+    pedidos = set()
+    for eleccion in elecciones:
+        pedido = Pedido.objects.filter(elecciones__in=[eleccion])
+        pedidos.add(pedido)
+    num_pedidos = len(pedidos)
+    # Dinero total recaudado 
     dinero_total_exp = ExpressionWrapper(
-        F('coche__precio_inicial') + F('accesorios__precio') * F('cantidad'),
+        (F('coche__precio_inicial')) * F('cantidad'),
         output_field=DecimalField(),
     )
     dinero_total_recaudado = Eleccion.objects.filter(comprado=True).aggregate(total_recaudado=Sum(dinero_total_exp))['total_recaudado'] or 0
@@ -413,12 +417,13 @@ def estadisticas_coches(request):
         'data_combustible': data_combustible,
         'labels_conduccion': labels_conduccion,
         'data_conduccion': data_conduccion,
-        'total_pedidos': total_pedidos,
+        'num_pedidos': num_pedidos,
         'dinero_total_recaudado': dinero_total_recaudado,
     }
 
     return render(request, 'estadisticas/estadisticas_coches.html', context)
 
+@user_passes_test(is_admin)
 def estadisticas_accesorios(request):
     
     numero_accesorios_vendidos = Eleccion.objects.filter(comprado=True).aggregate(total_accesorios_vendidos=Sum('cantidad'))['total_accesorios_vendidos'] or 0

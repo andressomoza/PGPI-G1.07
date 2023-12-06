@@ -59,9 +59,9 @@
             </div>
             {% endif %}
             {% if user.is_authenticated and user.is_staff %}
-            <a href="{% url " shop:editar_coche" coche.id %}"><button type="button" class="btn btn-primary"
+            <a href="{% url "shop:editar_coche" coche.id %}"><button type="button" class="btn btn-primary"
                 name="editar">Editar</button></a>
-            <a href="{% url " shop:borrar_coche" coche.id %}"><button type="button" class="btn btn-primary"
+            <a href="{% url "shop:borrar_coche" coche.id %}"><button type="button" class="btn btn-primary"
                 name="editar">Eliminar</button></a>
 
             {% else %}
@@ -102,7 +102,7 @@
                 <p class="text-danger">¡Producto Agotado!</p>
                 {% else %}
                 <label class="d-block">
-                  <input type="checkbox" name="accesorios_seleccionados[]" value="{{ accesorio.id }}">
+                  <input type="checkbox" name="accesorios_seleccionados" value="{{ accesorio.id }}">
                   Seleccionar
                 </label>
                 {% endif %}
@@ -140,7 +140,7 @@
                   {% endfor %}
               </div>
               {% if user.is_authenticated and user.is_staff %}
-              <a href="{% url " opiniones:borrar_opinion" opinion.id %}">
+              <a href="{% url "opiniones:borrar_opinion" opinion.id %}">
                 <button type="button" class="btn btn-danger btn-smb" name="eliminar">Eliminar</button>
               </a>
               {% endif %}

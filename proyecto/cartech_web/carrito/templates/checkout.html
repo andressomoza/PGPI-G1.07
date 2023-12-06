@@ -44,7 +44,13 @@ Checkout
                         {% endfor %}
                     </tbody>
                 </table>
-                <h4 class="text-center">Total: {{ precio_total }} €</h4>
+                {% if precio_total < 25000 %} {# Añadir gastos de envío si el precio es inferior a 25000 euros #} 
+                    {% with gastos_envio=0 %} 
+                    <p class="font-weight-bold text-danger">Precio Total del Pedido (con gastos de envío): {{precio_total|add:gastos_envio }}€</p>
+                    {% endwith %}
+                {% else %}
+                    <h4 class="text-center">Total: {{ precio_total }} €</h4>
+                {% endif %}
             </div>
         </div>
         <div class="col-md-4">

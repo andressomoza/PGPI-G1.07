@@ -13,7 +13,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'  # or another template pack of your choice
+CRISPY_TEMPLATE_PACK = 'bootstrap4'  
 
 
 INSTALLED_APPS = [
