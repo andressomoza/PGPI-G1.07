@@ -79,7 +79,12 @@ Carrito
                         <button onclick="window.location='{% url "shop:listado_coches" %}'" class="btn btn-primary btn-sm btn-block">Continuar Comprando</button>
                     </div>
                     <div class="col-md-6">
-                        <a href="{% url 'carrito:checkout' %}" class="btn btn-outline-primary btn-sm btn-block">Realizar Pedido</a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'carrito:checkout' %}" class="btn btn-outline-primary btn-sm btn-block">Realizar Pedido</a>
+                        {% else %}
+                            <a class="btn btn-secondary" href="{% url 'login' %}">Accede como invitado o inicia sesion.</a>
+                        {% endif %}
+                        
                     </div>
                 </div>
             </div>
@@ -103,7 +108,12 @@ Carrito
 
                         <div class="row">
                             <div class="col-md-12">
+                                {% if user.is_authenticated %}
                                 <a href="{% url 'carrito:checkout' %}" class="btn btn-primary btn-lg py-3 btn-block">Continuar al Pago</a>
+                                {% else %}
+                                    <a class="btn btn-secondary" href="{% url 'login' %}">Accede como invitado o inicia sesion.</a>
+                                {% endif %}
+                                
                             </div>
                         </div>
                     </div>
