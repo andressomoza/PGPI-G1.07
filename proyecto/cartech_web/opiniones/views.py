@@ -8,7 +8,9 @@ from django.http import HttpResponseRedirect
 from shop.models import Eleccion
 
 def pagina_base(request):
-    return render(request, 'base_opiniones.html')
+    usuario = request.user.id
+    elecciones = Eleccion.objects.filter(usuario_id=usuario, comprado=False)
+    return render(request, 'base_opiniones.html', {'elecciones': elecciones})
 
 def crear_opinion(request, id_eleccion):
     print(id_eleccion)
