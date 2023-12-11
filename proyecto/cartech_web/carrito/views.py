@@ -41,7 +41,7 @@ def send_email(reci, cuerpo):
 
 def preparar_cuerpo_email(pedido, elecciones, precio_total):
     cuerpo = ""
-    str1 = "¡Su pedido con ID " + str(pedido.id) + " ha sido recibido!\n"
+    str1 = "¡Su pedido con ID " + str(pedido.id_pedido) + " ha sido recibido!\n"
     str2 = "Los datos del pedido son: " + pedido.nombre + " " + pedido.apellidos + " en la dirección: " + pedido.direccion + ", " + pedido.ciudad + " (" + str(pedido.codigo_postal) + ")\n"
     str3 = "El contenido del pedido es el siguiente:\n"
     cuerpo = cuerpo + str1 + str2 + str3
@@ -147,10 +147,19 @@ def checkout(request):
                 pedido.save()
                 
                 cuerpo = preparar_cuerpo_email(pedido, elecciones, precio_total)
-                send_email('andressomozasierra@gmail.com', cuerpo)
+                send_email(pedido.email, cuerpo)
                 return HttpResponseRedirect(reverse('pedidos:detalle_pedido', args=[pedido.id]))
 
             else:
+                request.session['pedido_form_data'] = {
+                'nombre': form.cleaned_data['nombre'],
+                'apellidos': form.cleaned_data['apellidos'],
+                'email': form.cleaned_data['email'],
+                'direccion': form.cleaned_data['direccion'],
+                'ciudad': form.cleaned_data['ciudad'],
+                'codigo_postal': form.cleaned_data['codigo_postal'],
+                'metodo_pago': form.cleaned_data['metodo_pago'],
+        }
                 return HttpResponseRedirect(reverse('carrito:make_payment') + f"?nombre={form.cleaned_data['nombre']}&apellidos={form.cleaned_data['apellidos']}&email={form.cleaned_data['email']}&direccion={form.cleaned_data['direccion']}&ciudad={form.cleaned_data['ciudad']}&codigo_postal={form.cleaned_data['codigo_postal']}&metodo_pago={form.cleaned_data['metodo_pago']}")
 
     else:
@@ -207,22 +216,16 @@ class PaymentView(View):
             print(response.get('status'))
             if response.get('status'):
 
-                nombre = request.GET.get('nombre', '')
-                apellidos = request.GET.get('apellidos', '')
-                email = request.GET.get('email', '')
-                direccion = request.GET.get('direccion', '')
-                ciudad = request.GET.get('ciudad', '')
-                codigo_postal = request.GET.get('codigo_postal', '')
-                metodo_pago = request.GET.get('metodo_pago', '')
+                form_data = request.session.get('pedido_form_data', {})
 
                 pedido = Pedido.objects.create(usuario=us)
-                pedido.nombre = nombre
-                pedido.apellidos = apellidos
-                pedido.email = email
-                pedido.direccion = direccion
-                pedido.ciudad = ciudad
-                pedido.codigo_postal = codigo_postal
-                pedido.metodo_pago = metodo_pago
+                pedido.nombre = form_data['nombre']
+                pedido.apellidos = form_data['apellidos']
+                pedido.email = form_data['email']
+                pedido.direccion = form_data['direccion']
+                pedido.ciudad = form_data['ciudad']
+                pedido.codigo_postal = form_data['codigo_postal']
+                pedido.metodo_pago = form_data['metodo_pago']
                 for eleccion in elecciones:
                     eleccion.comprado = True
                     eleccion.pedido = pedido
@@ -232,6 +235,10 @@ class PaymentView(View):
                     coche.save()
                     eleccion.save()
                 pedido.save()
+
+                cuerpo = preparar_cuerpo_email(pedido, elecciones, precio_total)
+                print("EMAIL" + pedido.email)
+                send_email(pedido.email, cuerpo)
 
                 return HttpResponseRedirect(reverse('pedidos:detalle_pedido', args=[pedido.id]))
             else:
