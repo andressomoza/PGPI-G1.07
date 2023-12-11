@@ -26,7 +26,8 @@
                         <div class="block-4 text-center border">
                             <div class="block-4-text p-4">
                                 <p class="mb-0">Titulo: {{ incidencia.titulo }}</p>
-                                <p class="mb-0">{{ incidencia.descripcion }}</p>
+                                <p class="mb-0">Descripción: {{ incidencia.descripcion }}</p>
+                                <p class="mb-0">Estado: {{ incidencia.estado }}</p>
                                 {% if incidencia.pedido %}
                                 <p class="mb-0">Pedido asociado:{{ incidencia.pedido.id_pedido }}</p>
                                 {% endif %} 
