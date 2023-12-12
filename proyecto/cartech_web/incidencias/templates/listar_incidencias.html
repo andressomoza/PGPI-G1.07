@@ -45,8 +45,10 @@
                             <div class="block-4-text p-4">
                                 <p class="mb-0">Usuario: {{ incidencia.usuario.first_name }}</p>
                                 <p class="mb-0">Titulo: {{ incidencia.titulo }}</p>
+                                <p class="mb-0">Descripcion: {{ incidencia.descripcion }}</p>
                                 <p class="text-primary font-weight-bold">Urgencia: {{ incidencia.urgencia }}</p>
-                                <a href="{% url "incidencias:borrar_incidencia" incidencia.id %}"><button type="button" class="btn btn-danger btn-smb" name="eliminar">Eliminar</button></a>
+                                <p class="mb-0">Estado: {{ incidencia.estado }}</p>
+                                <a href="{% url "incidencias:editar_incidencia" incidencia.id %}"><button type="button" class="btn btn-danger btn-smb" name="eliminar">Cambiar status</button></a>
 
                             </div>
                         </div>

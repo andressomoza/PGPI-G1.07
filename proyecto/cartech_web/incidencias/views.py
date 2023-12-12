@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect ,get_object_or_404
 
 from pedidos.models import Pedido
-from .forms import IncidenciaForm
+from .forms import IncidenciaForm, IncidenciaEditForm
 from .models import Incidencia
 from django.contrib.auth.decorators import user_passes_test
 from cartech_web.views import is_admin
@@ -18,6 +18,7 @@ def crear_incidencia(request):
         form = IncidenciaForm(request.POST)
         if form.is_valid():
             incidencia = form.save(commit=False)
+            incidencia.estado = 'sin_revisar'
             incidencia.usuario = request.user 
             incidencia.save()
             return HttpResponseRedirect('/incidencias/me')
@@ -65,14 +66,18 @@ def listar_incidencias(request):
     return render(request, 'listar_incidencias.html', context)
 
 @user_passes_test(is_admin)
-def borrar_incidencia(request, id):
+def editar_incidencia(request, id):
     incidencia = get_object_or_404(Incidencia, id=id)
 
     if request.method == 'POST':
-        incidencia.delete()
-        return HttpResponseRedirect('/incidencias/list')  
+        form = IncidenciaEditForm(request.POST, instance=incidencia)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/incidencias/list')  
+    else:
+        form = IncidenciaEditForm(instance=incidencia)
 
-    return render(request, 'borrar_incidencia.html', {'incidencia': incidencia})
+    return render(request, 'editar_incidencia.html', {'form': form, 'incidencia': incidencia})
 
 def mis_incidencias(request):
     
