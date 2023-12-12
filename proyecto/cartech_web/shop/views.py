@@ -9,6 +9,10 @@ from cartech_web.views import is_admin
 from django.db.models import Sum, Count, F,  ExpressionWrapper, DecimalField,fields
 from django.db import models
 from pedidos.models import Pedido
+import random
+from user.models import User
+import string
+from django.contrib.auth import logout, login, authenticate
 
 def home(request):
     usuario = request.user.id
@@ -340,12 +344,29 @@ def detalles_coche(request, id):
                 eleccion.accesorios.set(accesorios_comprar)
                 return HttpResponseRedirect('/carrito/')
         elif 'ya' in request.POST:
+            base_username = 'default_user'
+            base_email = 'default_user@example.com'
+            suffix = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+            default_user_data = {
+                'username': f'{base_username}_{suffix}',
+                'password': 'password123',  
+                'email': f'{base_email}_{suffix}',
+            }
+            user_exists = User.objects.filter(username=default_user_data['username']).exists()
+
+            if not user_exists:
+                user = User.objects.create_user(**default_user_data)
+
+                
+                user = authenticate(request, username=user.email, password=default_user_data['password'])
+                login(request, user)
             accesorios_comprar_ids = request.POST.getlist('accesorios_comprar', [])
             accesorios_comprar = Accesorio.objects.filter(id__in=accesorios_comprar_ids)
             cantidad = int(request.POST.get('cantidad', 1))
             eleccion = Eleccion(coche=coche, usuario = request.user, cantidad = cantidad)
             eleccion.save()
             eleccion.accesorios.set(accesorios_comprar)
+
             return HttpResponseRedirect('/carrito/checkout')
 
     precio_total = coche.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
