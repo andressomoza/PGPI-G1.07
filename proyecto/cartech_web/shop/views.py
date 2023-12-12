@@ -339,6 +339,14 @@ def detalles_coche(request, id):
                 eleccion.save()
                 eleccion.accesorios.set(accesorios_comprar)
                 return HttpResponseRedirect('/carrito/')
+        elif 'ya' in request.POST:
+            accesorios_comprar_ids = request.POST.getlist('accesorios_comprar', [])
+            accesorios_comprar = Accesorio.objects.filter(id__in=accesorios_comprar_ids)
+            cantidad = int(request.POST.get('cantidad', 1))
+            eleccion = Eleccion(coche=coche, usuario = request.user, cantidad = cantidad)
+            eleccion.save()
+            eleccion.accesorios.set(accesorios_comprar)
+            return HttpResponseRedirect('/carrito/checkout')
 
     precio_total = coche.precio_inicial + sum(accesorio.precio for accesorio in accesorios_seleccionados)
     context = {
