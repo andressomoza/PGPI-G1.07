@@ -37,19 +37,7 @@
                             <br>
                             <label for="modelo">Marca</label>
                             <input type="text" class="form-control" id="marca" name="marca" value="{{ marca }}">
-                            <label for="modelo">Modelo</label>
-                            <input type="text" class="form-control" id="modelo" name="modelo" value="{{ modelo }}">
-                            <label for="combustible">Tipo de Combustible</label>
-                            <select class="form-control" id="combustible" name="combustible">
-                                <option value="" {% if not combustible %}selected{% endif %}>Todos</option>
-                                <option value="gasolina" {% if combustible == 'gasolina' %}selected{% endif %}>Gasolina
-                                </option>
-                                <option value="diesel" {% if combustible == 'diesel' %}selected{% endif %}>Diesel</option>
-                                <option value="hibrido" {% if combustible == 'hibrido' %}selected{% endif %}>Híbrido
-                                </option>
-                                <option value="electrico" {% if combustible == 'electrico' %}selected{% endif %}>Eléctrico
-                                </option>
-                            </select>
+                            
 
                             <label for="combustible">Tipo de Conducción</label>
                             <select class="form-control" id="conduccion" name="conduccion">
@@ -58,17 +46,6 @@
                                 <option value="automatico" {% if conduccion == 'automatico' %}selected{% endif %}>
                                     Automático</option>
                             </select>
-
-                            <label for="precio_maximo">Precio Máximo</label>
-                            <input type="number" class="form-control" id="precio_maximo" name="precio_maximo"
-                                value="{{ precio_maximo }}">
-
-                            <label for="consumo">Consumo</label>
-                            <input type="number" class="form-control" id="consumo" name="consumo" value="{{ consumo }}">
-
-                            <label for="caballos">Caballos</label>
-                            <input type="number" class="form-control" id="caballos" name="caballos"
-                                value="{{ caballos }}">
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm">Aplicar Filtro</button>
                         <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters(event)">Resetear
